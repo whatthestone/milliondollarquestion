@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Row, Col, Card, Container, Button } from "react-bootstrap";
-import Recipe from "../components/Recipe.js";
-import RecommendedCard from "../components/RecommendedCard.js";
+import { Row, Container, Button } from "react-bootstrap";
+import RecommendedCard from "../components/RecommendedCard";
 
 const OptionSelectionWrapper = styled.div`
   text-align: center;
@@ -20,17 +19,23 @@ const Header = styled.h3`
 
 const SubHeader = styled.p`
   text-align: center;
-`
+`;
 
-class Main extends Component {
+class MDAnswer extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
+    const recipe = this.props.recipe;
+
     return (
       <Container>
         <div>
           <Header>The Million Dollar Answer</Header>
-          <SubHeader>This is what we suggest: </SubHeader> 
+          <SubHeader>This is what we suggest: </SubHeader>
         </div>
-        <RecommendedCard />
+        <RecommendedCard recipe={recipe} />
         <Row>
           <OptionSelectionWrapper>
             <SButton variant="outline-primary">Edit</SButton>
@@ -46,4 +51,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default MDAnswer;

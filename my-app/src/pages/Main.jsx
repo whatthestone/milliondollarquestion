@@ -1,56 +1,59 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import MDAnswer from "../components/MDAnswer";
 import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
 
-class Main extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data: false,
-      offset: 0,
-    };
-  }
+//Using functional component
+const Main = () => {
+  //Stores state of variables required for fetch. Modern way of state using hooks.
+  const [data, setData] = useState(null);
+  const [recipe, setRecipe] = useState(null);
+  const [mealType, setMealType] = useState(null);
+  const [maxReadyTime, setMaxReadyTime] = useState(null);
+  const [cuisine, setCuisine] = useState(null);
 
-  componentDidMount() {
-      const cuisine = "asian";
-      const maxReadyTime = "20";
-      const mealType = "breakfast";
-
-    //get totalResults of query, generate random offset, use offset to get array of 10 recipes, add results to state. If 404, use fakedata
-    fetch( //very waste points just to get totalResults, maybe do sort=popularity to get top popularity and heck the offset?
-      `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
-    )
-      .then((res) => {
-        return res.status === 404 ? 0 : res.json();
-      })
-      .then((json) => {
-        const offSet = Math.floor(
-          Math.random() * Math.min(json.totalResults, 990)
-        );
-        return fetch(
-          `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&offset=${offSet}&apiKey=${process.env.REACT_APP_APIKEY}`
-        );
-      })
-      .then((res) => {
-        return res.status === 404 ? fakeResults : res.json();
-      })
-      .then((json) => {
-        let data = {};
-        data = json || fakeResults;
-        this.setState({
-          data: data.results,
+  //this is modern way of doing componentDidMount using hooks!
+  useEffect(() => {
+    //Only fetch if all not null
+    if (mealType && maxReadyTime && cuisine) {
+      fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
+      )
+        .then((res) => {
+          return res.status === 404 || res.status === 401 //use fakeresults if no api key too
+            ? fakeResults
+            : res.json();
+        })
+        .then((json) => {
+          let newData = {};
+          newData = json || fakeResults;
+          console.log(newData);
+          const randomRecipe = newData.results[Math.floor(Math.random() * 10)];
+          //set state of data and recipe
+          setData(newData.results);
+          setRecipe(randomRecipe);
+          //TODO: Ask question again if no result.
         });
-      });
-  }
+    }
+  }, [cuisine, maxReadyTime, mealType]); //useEffect runs if any of this gets updated
 
-  render() {
+  //Set state of mealType, maxReadyTime and cuisine
+  const setPreference = (preference) => {
+    const { mealType, maxReadyTime, cuisine } = preference;
+    setMealType(mealType);
+    setMaxReadyTime(maxReadyTime);
+    setCuisine(cuisine);
+  };
 
-    const { data } = this.state;
-    const recipe = data[Math.floor(Math.random() * 10)];
-
-    return <div>{recipe ? <MDAnswer recipe={recipe} /> : <MDQuestion />}</div>;
-  }
-}
+  return (
+    <div>
+      {recipe ? (
+        <MDAnswer recipe={recipe} />
+      ) : (
+        <MDQuestion setPreference={setPreference} />
+      )}
+    </div>
+  );
+};
 
 export default Main;

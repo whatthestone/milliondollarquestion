@@ -1,7 +1,5 @@
-import React, { Component, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import MyDropdownButton from "./MyDropdownButton";
 import MyDropdownButon from "./MyDropdownButton";
 
 const StyledContainer = styled.div`
@@ -18,7 +16,25 @@ const StyledQnContainer = styled.div`
   margin: 2rem;
 `;
 
-const MDQuestion = () => {
+const MDQuestion = ({ setPreference }) => {
+  //State for MDQuestion
+  const [mealType, setMealType] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
+  const [cuisine, setCuisine] = useState(null);
+
+  useEffect(() => {
+    if (mealType && difficulty && cuisine) {
+      const preference = {
+        mealType,
+        cuisine,
+        maxReadyTime:
+          difficulty === "Easy" ? "20" : difficulty === "Medium" ? "40" : "60",
+      };
+
+      setPreference(preference);
+    }
+  }, [mealType, difficulty, cuisine]);
+
   const mealTypes = [
     "main course",
     "side dish",
@@ -66,10 +82,6 @@ const MDQuestion = () => {
     "Thai",
     "Vietnamese",
   ];
-
-  const [mealType, setMealType] = useState(null);
-  const [difficulty, setDifficulty] = useState(null);
-  const [cuisine, setCuisine] = useState(null);
 
   return (
     <StyledContainer>

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Row, Card, Container, Nav, Tab, Tabs } from "react-bootstrap";
-import RecipeMethod from "./RecipeMethod.js";
-import RecipeIngredients from "./RecipeIngredients.js";
+import { Container, Tab, Tabs } from "react-bootstrap";
+import RecipeMethod from "./RecipeMethod";
+import RecipeIngredients from "./RecipeIngredients";
 
 const STabs = styled(Tabs)`
   width: 100%;
@@ -12,19 +12,22 @@ const STabs = styled(Tabs)`
 
 const SContainer = styled(Container)`
   padding-top: 10px;
-`
-
+`;
 
 class Recipe extends Component {
   render() {
+    const methods = this.props.recipeMethod;
+    const ingredients = this.props.recipeIngredients;
+    const id = this.props.id;
+
     return (
       <SContainer>
         <STabs defaultActiveKey="ingredients" id="uncontrolled-tab-example">
           <Tab eventKey="ingredients" title="Ingredients">
-            <RecipeIngredients />
+            <RecipeIngredients key={id} id={id} ingredients={ingredients} />
           </Tab>
           <Tab eventKey="method" title="Method">
-            <RecipeMethod />
+            <RecipeMethod key={id} id={id} methods={methods}/>
           </Tab>
         </STabs>
       </SContainer>

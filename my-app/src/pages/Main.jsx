@@ -23,6 +23,7 @@ const Main = ({ url }) => {
     maxReadyTime: null,
     cuisine: null,
   });
+  const [showAns, setShowAns] = useState(null);
 
   useEffect(() => {
     //Only fetch if all not null
@@ -57,23 +58,23 @@ const Main = ({ url }) => {
     }
   }, [data]);
 
+  //ONLY if showAns (a question is asked), redirect to ans page
   return (
     <div>
-      {recipeId ? (
-        <div>
-          <Redirect to={{ pathname: `${url}/answer` }} />
-          <Route path={`${url}/answer`}>
-            <MDAnswer recipeId={recipeId} onEdit={() => setRecipeId(null)} />
-          </Route>
-        </div>
-      ) : (
-        <div>
+      {showAns && <Redirect to={{ pathname: `${url}/answer` }} />}
+      <Switch>
+        <Route path={`${url}/answer`}>
+          <MDAnswer recipeId={recipeId} onEdit={() => setRecipeId(null)} />
+        </Route>
+
+        <Route path={`${url}/qn`}>
+          <MDQuestion setPreference={setPreference} setShowAns={setShowAns} />
+        </Route>
+
+        <Route exact path={`${url}`}>
           <Redirect to={{ pathname: `${url}/qn` }} />
-          <Route path={`${url}/qn`}>
-            <MDQuestion setPreference={setPreference} />
-          </Route>
-        </div>
-      )}
+        </Route>
+      </Switch>
     </div>
   );
 };

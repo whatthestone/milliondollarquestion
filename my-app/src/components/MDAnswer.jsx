@@ -38,7 +38,7 @@ class MDAnswer extends Component {
         <RecommendedCard recipe={recipe} />
         <Row>
           <OptionSelectionWrapper>
-            <SButton variant="outline-primary">Edit</SButton>
+            <SButton variant="outline-primary" onClick={this.props.onEdit}>Edit</SButton>
             <SButton>SAVE</SButton>
             <SButton variant="outline-primary">Another</SButton>
           </OptionSelectionWrapper>

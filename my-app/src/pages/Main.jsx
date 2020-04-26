@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import MDAnswer from "../components/MDAnswer";
 import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 
 //Using functional component
-const Main = () => {
+const Main = ({ url }) => {
   //Stores state of variables required for fetch. Modern way of state using hooks.
   const [data, setData] = useState(null);
   const [recipe, setRecipe] = useState(null);
@@ -28,14 +35,17 @@ const Main = () => {
           let newData = {};
           newData = json || fakeResults;
           console.log(newData);
-          const randomRecipe = newData.results[Math.floor(Math.random() * 10)];
-          //set state of data and recipe
+          //set state of data if newData.results exists
           setData(newData.results);
-          setRecipe(randomRecipe);
           //TODO: Ask question again if no result.
         });
     }
   }, [cuisine, maxReadyTime, mealType]); //useEffect runs if any of this gets updated
+
+  //Update recipe if data !=null
+  useEffect(() => {
+    setRecipe(data ? data[Math.floor(Math.random() * data.length)] : null);
+  }, [data]);
 
   //Set state of mealType, maxReadyTime and cuisine
   const setPreference = (preference) => {
@@ -48,9 +58,18 @@ const Main = () => {
   return (
     <div>
       {recipe ? (
-        <MDAnswer recipe={recipe} />
+        <div>
+          <Redirect to={{ pathname: `${url}/answer` }} />
+          <Route path={`${url}/answer`}>
+            <MDAnswer recipe={recipe} onEdit={() => setData(null)} />
+          </Route>
+        </div>
       ) : (
-        <MDQuestion setPreference={setPreference} />
+        <div>
+          <Route path={url}>
+            <MDQuestion setPreference={setPreference} />
+          </Route>
+        </div>
       )}
     </div>
   );

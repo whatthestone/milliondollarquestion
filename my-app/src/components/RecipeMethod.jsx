@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Container } from "react-bootstrap";
 
 const Wrapper = styled.div`
   margin-top: 30px;
 `;
 
 class RecipeMethod extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     const methods = this.props.methods;

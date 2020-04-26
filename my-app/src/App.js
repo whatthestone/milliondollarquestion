@@ -3,22 +3,22 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   useRouteMatch,
+  Link
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Main from "./pages/Main";
+// import Nav from "./components/Nav";
+import { Navbar, NavDropdown } from "react-bootstrap";
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
-          {
-            /*This is the Nav*/
-          }
+
           <ul>
             <li>
               <Link to="/">Dashboard</Link>
@@ -30,6 +30,7 @@ class App extends Component {
               <Link to="/main">Main</Link>
             </li>
           </ul>
+
           <hr />
           {/*
             A <Switch> looks through all its children <Route>

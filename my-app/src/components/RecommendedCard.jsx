@@ -53,7 +53,7 @@ class RecommendedCard extends Component {
   }
 
   componentDidMount(props) {
-    const recipeId = this.props.recipe.id;
+    const recipeId = this.props.recipeId;
 
     fetch(
       `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
@@ -88,7 +88,9 @@ class RecommendedCard extends Component {
                 recipeIngredients={recipe.extendedIngredients}
                 recipeMethod={recipe.analyzedInstructions}
               />
-            <Button variant="primary" href={recipe.sourceUrl} target="_blank">Go to site</Button>
+              <Button variant="primary" href={recipe.sourceUrl} target="_blank">
+                Go to site
+              </Button>
             </SCardText>
           </Col>
         </Row>

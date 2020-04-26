@@ -14,14 +14,19 @@ import {
 const Main = ({ url }) => {
   //Stores state of variables required for fetch. Modern way of state using hooks.
   const [data, setData] = useState(null);
-  const [recipe, setRecipe] = useState(null);
-  const [mealType, setMealType] = useState(null);
-  const [maxReadyTime, setMaxReadyTime] = useState(null);
-  const [cuisine, setCuisine] = useState(null);
+  //If recipeid in localstorage initialise it
+  const [recipeId, setRecipeId] = useState(
+    localStorage.getItem("recipeId") || null
+  );
+  const [preference, setPreference] = useState({
+    mealType: null,
+    maxReadyTime: null,
+    cuisine: null,
+  });
 
-  //this is modern way of doing componentDidMount using hooks!
   useEffect(() => {
     //Only fetch if all not null
+    const { mealType, maxReadyTime, cuisine } = preference;
     if (mealType && maxReadyTime && cuisine) {
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
@@ -35,38 +40,36 @@ const Main = ({ url }) => {
           let newData = {};
           newData = json || fakeResults;
           console.log(newData);
-          //set state of data if newData.results exists
+          //set state of data
           setData(newData.results);
           //TODO: Ask question again if no result.
         });
     }
-  }, [cuisine, maxReadyTime, mealType]); //useEffect runs if any of this gets updated
+  }, [preference]);
 
-  //Update recipe if data !=null
+  //Update recipe if data !=null and length > 0
   useEffect(() => {
-    setRecipe(data ? data[Math.floor(Math.random() * data.length)] : null);
+    if (data?.length > 0) {
+      const randomRecipe = data[Math.floor(Math.random() * data.length)];
+      setRecipeId(randomRecipe.id);
+      //Store recipeId in localstorage
+      localStorage.setItem("recipeId", randomRecipe.id);
+    }
   }, [data]);
-
-  //Set state of mealType, maxReadyTime and cuisine
-  const setPreference = (preference) => {
-    const { mealType, maxReadyTime, cuisine } = preference;
-    setMealType(mealType);
-    setMaxReadyTime(maxReadyTime);
-    setCuisine(cuisine);
-  };
 
   return (
     <div>
-      {recipe ? (
+      {recipeId ? (
         <div>
           <Redirect to={{ pathname: `${url}/answer` }} />
           <Route path={`${url}/answer`}>
-            <MDAnswer recipe={recipe} onEdit={() => setData(null)} />
+            <MDAnswer recipeId={recipeId} onEdit={() => setRecipeId(null)} />
           </Route>
         </div>
       ) : (
         <div>
-          <Route path={url}>
+          <Redirect to={{ pathname: `${url}/qn` }} />
+          <Route path={`${url}/qn`}>
             <MDQuestion setPreference={setPreference} />
           </Route>
         </div>

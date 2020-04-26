@@ -7,9 +7,9 @@ const Wrapper = styled.div`
 `;
 
 class RecipeIngredients extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     const ingredients = this.props.ingredients;

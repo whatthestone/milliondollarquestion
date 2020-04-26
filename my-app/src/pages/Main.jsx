@@ -27,7 +27,7 @@ const Main = ({ url }) => {
         `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
       )
         .then((res) => {
-          return res.status === 404 || res.status === 401 //use fakeresults if no api key too
+          return res.status > 300 //use fakeresults if no api key too
             ? fakeResults
             : res.json();
         })

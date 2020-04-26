@@ -22,9 +22,9 @@ const SubHeader = styled.p`
 `;
 
 class MDAnswer extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     const recipe = this.props.recipe;

@@ -56,10 +56,10 @@ class RecommendedCard extends Component {
     const recipeId = this.props.recipe.id;
 
     fetch(
-      "https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false"
+      `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
     )
       .then((res) => {
-        return res.status === 404 ? fakeRecipe : res.json();
+        return res.status > 300 ? fakeRecipe : res.json();
       })
       .then((json) => {
         this.setState({ recipe: json });

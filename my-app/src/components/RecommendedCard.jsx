@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React,  { useState, useEffect }  from "react";
 import styled from "styled-components";
 import { Card, Button } from "react-bootstrap";
 import Recipe from "./Recipe";
@@ -58,17 +58,10 @@ const StyledCardBody = styled(Card.Body)`
   justify-content: center;
 `;
 
-class RecommendedCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      recipe: false,
-    };
-  }
+const RecommendedCard = ({ recipeId }) => {
+  const [recipe, setRecipe] = useState(fakeRecipe);
 
-  componentDidMount(props) {
-    const recipeId = this.props.recipeId;
-
+  useEffect(() => {
     fetch(
       `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
     )
@@ -76,38 +69,34 @@ class RecommendedCard extends Component {
         return res.status > 300 ? fakeRecipe : res.json();
       })
       .then((json) => {
-        this.setState({ recipe: json });
+        setRecipe(json);
       });
-  }
+  }, [recipeId]);
 
-  render() {
-    const recipe = this.state.recipe;
-
-    return (
-      <>
-        <SCard>
-          <StyledCardImg variant="top" src={recipe.image} />
-          <StyledCardBody>
-            <SCardTitle>{recipe.title}</SCardTitle>
-            <Link href="www.kitchen.com/recipe" target="_blank">
-              www.kitchen.com
-            </Link>
-            <Card.Text>
-              <Recipe
-                key={recipe.id}
-                id={recipe.id}
-                recipeIngredients={recipe.extendedIngredients}
-                recipeMethod={recipe.analyzedInstructions}
-              />
-            </Card.Text>
-            <Button variant="primary" href={recipe.sourceUrl} target="_blank">
-              Go to site
-            </Button>
-          </StyledCardBody>
-        </SCard>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <SCard>
+        <StyledCardImg variant="top" src={recipe.image} />
+        <StyledCardBody>
+          <SCardTitle>{recipe.title}</SCardTitle>
+          <Link href="www.kitchen.com/recipe" target="_blank">
+            www.kitchen.com
+          </Link>
+          <Card.Text>
+            <Recipe
+              key={recipe.id}
+              id={recipe.id}
+              recipeIngredients={recipe.extendedIngredients}
+              recipeMethod={recipe.analyzedInstructions}
+            />
+          </Card.Text>
+          <Button variant="primary" href={recipe.sourceUrl} target="_blank">
+            Go to site
+          </Button>
+        </StyledCardBody>
+      </SCard>
+    </>
+  );
+};
 
 export default RecommendedCard;

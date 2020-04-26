@@ -1,72 +1,78 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import MDAnswer from "../components/MDAnswer";
 import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
-import { Route, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 
-class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: false,
-      offset: 0,
-    };
+//Using functional component
+const Main = ({ url }) => {
+  //Stores state of variables required for fetch. Modern way of state using hooks.
+  const [data, setData] = useState(null);
+  const [recipe, setRecipe] = useState(null);
+  const [mealType, setMealType] = useState(null);
+  const [maxReadyTime, setMaxReadyTime] = useState(null);
+  const [cuisine, setCuisine] = useState(null);
 
-    this.handleEdit = this.handleEdit.bind(this);
-  }
-
-  handleEdit() {
-    this.setState({
-      data: false,
-      offset: 0,
-    });
-  }
-
-  componentDidMount() {
-    const cuisine = "asian";
-    const maxReadyTime = "20";
-    const mealType = "breakfast";
-
-    //get totalResults of query, generate random offset, use offset to get array of 10 recipes, add results to state. If 404, use fakedata
-    fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&sort=popularity&apiKey=${process.env.REACT_APP_APIKEY}`
-    )
-      .then((res) => {
-        return res.status > 300 ? fakeResults : res.json();
-      })
-      .then((json) => {
-        let data = {};
-        data = json || fakeResults;
-        this.setState({
-          data: data.results,
+  //this is modern way of doing componentDidMount using hooks!
+  useEffect(() => {
+    //Only fetch if all not null
+    if (mealType && maxReadyTime && cuisine) {
+      fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
+      )
+        .then((res) => {
+          return res.status > 300 //use fakeresults if no api key too
+            ? fakeResults
+            : res.json();
+        })
+        .then((json) => {
+          let newData = {};
+          newData = json || fakeResults;
+          console.log(newData);
+          //set state of data if newData.results exists
+          setData(newData.results);
+          //TODO: Ask question again if no result.
         });
-      });
-  }
+    }
+  }, [cuisine, maxReadyTime, mealType]); //useEffect runs if any of this gets updated
 
-  render() {
-    const { data } = this.state;
-    const recipe = data[Math.floor(Math.random() * 10)];
-    const url = this.props.url;
+  //Update recipe if data !=null
+  useEffect(() => {
+    setRecipe(data ? data[Math.floor(Math.random() * data.length)] : null);
+  }, [data]);
 
-    return (
-      <div>
-        {recipe ? (
-          <div>
-            <Redirect to={{ pathname: `${url}/answer` }} />
-            <Route path={`${url}/answer`}>
-              <MDAnswer recipe={recipe} onEdit={this.handleEdit} />
-            </Route>
-          </div>
-        ) : (
-          <div>
-            <Route path={url}>
-              <MDQuestion />
-            </Route>
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  //Set state of mealType, maxReadyTime and cuisine
+  const setPreference = (preference) => {
+    const { mealType, maxReadyTime, cuisine } = preference;
+    setMealType(mealType);
+    setMaxReadyTime(maxReadyTime);
+    setCuisine(cuisine);
+  };
+
+  return (
+    <div>
+      {recipe ? (
+        <div>
+          <Redirect to={{ pathname: `${url}/answer` }} />
+          <Route path={`${url}/answer`}>
+            <MDAnswer recipe={recipe} onEdit={() => setData(null)} />
+          </Route>
+        </div>
+      ) : (
+        <div>
+          <Route path={url}>
+            <MDQuestion setPreference={setPreference} />
+          </Route>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Main;

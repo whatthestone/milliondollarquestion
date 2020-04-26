@@ -4,34 +4,20 @@ import {
   Switch,
   Route,
   useRouteMatch,
-  Link
+  Link,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Main from "./pages/Main";
-// import Nav from "./components/Nav";
-import { Navbar, NavDropdown } from "react-bootstrap";
+import MyNav from "./components/MyNav";
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
-
-          <ul>
-            <li>
-              <Link to="/">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <Link to="/main">Main</Link>
-            </li>
-          </ul>
-
-          <hr />
+          <MyNav />
           {/*
             A <Switch> looks through all its children <Route>
             elements and renders the first one whose path

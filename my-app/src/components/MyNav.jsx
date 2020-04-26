@@ -5,7 +5,7 @@ import { Navbar, NavDropdown, Nav } from "react-bootstrap";
 const MyNav = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Navbar.Brand href="#home">Million Dollar Question</Navbar.Brand>
+      <Navbar.Brand href="/">Million Dollar Question</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">

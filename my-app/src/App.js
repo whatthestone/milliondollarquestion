@@ -10,7 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Main from "./pages/Main";
-import MyNav from "./components/Nav";
+import MyNav from "./components/MyNav";
 
 class App extends Component {
   render() {

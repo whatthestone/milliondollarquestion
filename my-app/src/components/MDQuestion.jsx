@@ -85,7 +85,7 @@ const MDQuestion = ({ setPreference }) => {
 
   return (
     <StyledContainer>
-      <h3>What kind of recipe are you looking for?</h3>
+      <h3>What are you feeling today?</h3>
       <StyledQnContainer>
         <MyDropdownButon
           title="Meal type"

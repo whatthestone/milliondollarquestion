@@ -27,7 +27,7 @@ class MDAnswer extends Component {
   // }
 
   render() {
-    const recipe = this.props.recipe;
+    const recipeId = this.props.recipeId;
 
     return (
       <Container>
@@ -35,10 +35,12 @@ class MDAnswer extends Component {
           <Header>The Million Dollar Answer</Header>
           <SubHeader>This is what we suggest: </SubHeader>
         </div>
-        <RecommendedCard recipe={recipe} />
+        <RecommendedCard recipeId={recipeId} />
         <Row>
           <OptionSelectionWrapper>
-            <SButton variant="outline-primary" onClick={this.props.onEdit}>Edit</SButton>
+            <SButton variant="outline-primary" onClick={this.props.onEdit}>
+              Edit
+            </SButton>
             <SButton>SAVE</SButton>
             <SButton variant="outline-primary">Another</SButton>
           </OptionSelectionWrapper>

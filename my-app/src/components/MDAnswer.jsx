@@ -30,7 +30,7 @@ class MDAnswer extends Component {
     const recipeId = this.props.recipeId;
 
     return (
-      <Container>
+      <Container style={{ "margin-top": "2rem" }}>
         <div>
           <Header>The Million Dollar Answer</Header>
           <SubHeader>This is what we suggest: </SubHeader>

@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
@@ -10,6 +16,9 @@ class App extends Component {
     return (
       <Router>
         <div>
+          {
+            /*This is the Nav*/
+          }
           <ul>
             <li>
               <Link to="/">Dashboard</Link>
@@ -21,9 +30,7 @@ class App extends Component {
               <Link to="/main">Main</Link>
             </li>
           </ul>
-
           <hr />
-
           {/*
             A <Switch> looks through all its children <Route>
             elements and renders the first one whose path
@@ -32,20 +39,19 @@ class App extends Component {
             of them to render at a time
           */}
           <Switch>
-            <Route exact path="/">
-              <Dashboard />
-            </Route>
-            <Route path="/profile">
-              <Profile />
-            </Route>
-            <Route path="/main">
-              <Main />
-            </Route>
+            <Route exact path="/" component={Dashboard}></Route>
+            <Route path="/profile" component={Profile}></Route>
+            <Route path="/main" component={MainRouter}></Route>
           </Switch>
         </div>
       </Router>
     );
   }
 }
+
+const MainRouter = () => {
+  let { path, url } = useRouteMatch();
+  return <Main url={url} path={path} />;
+};
 
 export default App;

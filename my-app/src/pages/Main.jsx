@@ -24,12 +24,16 @@ const Main = ({ url }) => {
     cuisine: null,
   });
 
+  const pantry = useState(JSON.parse(localStorage.getItem("pantry")));
+
   useEffect(() => {
     //Only fetch if all not null
     const { mealType, maxReadyTime, cuisine } = preference;
     if (mealType && maxReadyTime && cuisine) {
+      // const stringPantry = pantry.map((item) => `${item.name}`).join(",");
+      // console.log(stringPantry);
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
+        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=apples,+flour&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
       )
         .then((res) => {
           return res.status > 300 //use fakeresults if no api key too

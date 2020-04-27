@@ -20,9 +20,9 @@ class RecipeMethod extends Component {
             return (
               <div key={key}>
                 <h5>{methodSet.name}</h5>
-                {methodSet.steps.map((method, key) => {
+                {methodSet.steps.map((method, k) => {
                   return (
-                    <p key={key}>
+                    <p key={k}>
                       {method.number}: {method.step}
                     </p>
                   );

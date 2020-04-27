@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Card, Button } from "react-bootstrap";
 import Recipe from "./Recipe";
@@ -49,7 +49,7 @@ const StyledCardImg = styled(Card.Img)`
   width: 100%;
   height: 20rem;
   object-fit: cover;
-  background: no-repeat top;
+  background: no-repeat center;
 `;
 
 const StyledCardBody = styled(Card.Body)`
@@ -58,17 +58,10 @@ const StyledCardBody = styled(Card.Body)`
   justify-content: center;
 `;
 
-class RecommendedCard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      recipe: false,
-    };
-  }
+const RecommendedCard = ({ recipeId }) => {
+  const [recipe, setRecipe] = useState(null);
 
-  componentDidMount(props) {
-    const recipeId = this.props.recipeId;
-
+  useEffect(() => {
     fetch(
       `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
     )
@@ -76,15 +69,13 @@ class RecommendedCard extends Component {
         return res.status > 300 ? fakeRecipe : res.json();
       })
       .then((json) => {
-        this.setState({ recipe: json });
+        setRecipe(json);
       });
-  }
+  }, [recipeId]);
 
-  render() {
-    const recipe = this.state.recipe;
-
-    return (
-      <>
+  return (
+    <>
+      {recipe ? (
         <SCard>
           <StyledCardImg variant="top" src={recipe.image} />
           <StyledCardBody>
@@ -105,9 +96,9 @@ class RecommendedCard extends Component {
             </Button>
           </StyledCardBody>
         </SCard>
-      </>
-    );
-  }
-}
+      ) : null}
+    </>
+  );
+};
 
 export default RecommendedCard;

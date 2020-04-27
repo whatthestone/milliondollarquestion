@@ -10,6 +10,7 @@ function PantryAddModal(props) {
     e.preventDefault();
     const form = e.currentTarget;
 
+    // TODO: validation not working properly
     if (form.checkValidity()) {
       setValidated(true);
       props.handleAddItem({ itemName, expiry });
@@ -39,7 +40,7 @@ function PantryAddModal(props) {
               type="text"
               placeholder="Enter ingredient name"
               value={itemName}
-              onChange={(e) => setItemName(e.target.value)}
+              onChange={(e) => setItemName(e.target.value.toLowerCase())}
               required
             />
             <Form.Control.Feedback type="invalid">

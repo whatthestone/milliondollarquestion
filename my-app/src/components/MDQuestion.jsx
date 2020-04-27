@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MyDropdownButon from "./MyDropdownButton";
+import MyDropdownButton from "./MyDropdownButton";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const MDQuestion = ({ setPreference }) => {
 
       setPreference(preference);
     }
-  }, [mealType, difficulty, cuisine]);
+  }, [mealType, difficulty, cuisine, setPreference]);
 
   const mealTypes = [
     "main course",
@@ -87,19 +87,19 @@ const MDQuestion = ({ setPreference }) => {
     <StyledContainer>
       <h3>What are you feeling today?</h3>
       <StyledQnContainer>
-        <MyDropdownButon
+        <MyDropdownButton
           title="Meal type"
           optionList={mealTypes}
           setOption={setMealType}
           option={mealType}
         />
-        <MyDropdownButon
+        <MyDropdownButton
           title="Difficulty"
           optionList={diffTypes}
           setOption={setDifficulty}
           option={difficulty}
         />
-        <MyDropdownButon
+        <MyDropdownButton
           title="Cuisine"
           optionList={cuisineTypes}
           setOption={setCuisine}

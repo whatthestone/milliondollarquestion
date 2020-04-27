@@ -23,17 +23,21 @@ const Main = ({ url }) => {
     maxReadyTime: null,
     cuisine: null,
   });
+  const [showAns, setShowAns] = useState(false);
 
-  const pantry = useState(JSON.parse(localStorage.getItem("pantry")));
+  const [pantry] = useState(JSON.parse(localStorage.getItem("pantry")) || []);
 
   useEffect(() => {
     //Only fetch if all not null
     const { mealType, maxReadyTime, cuisine } = preference;
+
     if (mealType && maxReadyTime && cuisine) {
-      // const stringPantry = pantry.map((item) => `${item.name}`).join(",");
-      // console.log(stringPantry);
+      //string all the ingredients seperated by comma
+      //TODO check why api returning zero results if stringPantry have many items. I think it only returns recipe that use all the ingredients under "includeIngredients"
+      const stringPantry = pantry.map((item) => `${item.name}`).join(",");
+      console.log(stringPantry);
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=apples,+flour&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
+        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=${stringPantry}&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
       )
         .then((res) => {
           return res.status > 300 //use fakeresults if no api key too
@@ -46,6 +50,7 @@ const Main = ({ url }) => {
           console.log(newData);
           //set state of data
           setData(newData.results);
+          setShowAns(true);
           //TODO: Ask question again if no result.
         });
     }
@@ -61,23 +66,27 @@ const Main = ({ url }) => {
     }
   }, [data]);
 
+  //ONLY if showAns (a question is asked), redirect to ans page
   return (
     <div>
-      {recipeId ? (
-        <div>
-          <Redirect to={{ pathname: `${url}/answer` }} />
-          <Route path={`${url}/answer`}>
-            <MDAnswer recipeId={recipeId} onEdit={() => setRecipeId(null)} />
-          </Route>
-        </div>
+      {showAns ? (
+        <Redirect to={{ pathname: `${url}/answer` }} />
       ) : (
-        <div>
-          <Redirect to={{ pathname: `${url}/qn` }} />
-          <Route path={`${url}/qn`}>
-            <MDQuestion setPreference={setPreference} />
-          </Route>
-        </div>
+        <Redirect to={{ pathname: `${url}/qn` }} />
       )}
+      <Switch>
+        <Route path={`${url}/answer`}>
+          <MDAnswer recipeId={recipeId} onEdit={() => setShowAns(false)} />
+        </Route>
+
+        <Route path={`${url}/qn`}>
+          <MDQuestion setPreference={setPreference} />
+        </Route>
+
+        <Route exact path={`${url}`}>
+          <Redirect to={{ pathname: `${url}/qn` }} />
+        </Route>
+      </Switch>
     </div>
   );
 };

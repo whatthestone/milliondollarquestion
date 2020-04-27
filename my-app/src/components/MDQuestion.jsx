@@ -18,6 +18,7 @@ const StyledQnContainer = styled.div`
 
 const MDQuestion = ({ setPreference }) => {
   //State for MDQuestion
+  const pref = JSON.parse(localStorage.getItem("preference"));
   const [mealType, setMealType] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
   const [cuisine, setCuisine] = useState(null);
@@ -31,7 +32,14 @@ const MDQuestion = ({ setPreference }) => {
           difficulty === "Easy" ? "20" : difficulty === "Medium" ? "40" : "60",
       };
 
+      const rawPreference = {
+        mealType,
+        cuisine,
+        difficulty,
+      };
+
       setPreference(preference);
+      // localStorage.setItem("preference", JSON.stringify(rawPreference));
     }
   }, [mealType, difficulty, cuisine, setPreference]);
 

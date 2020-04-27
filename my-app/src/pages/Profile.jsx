@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, ListGroup, Card, Image } from "react-bootstrap";
 import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
@@ -24,32 +24,46 @@ const StyledButton = styled(Button)`
 `;
 
 export default function Profile() {
-  const [pantry, setPantry] = useState([
-    { name: "eggs", expiry: "2 weeks" },
-    { name: "ham", expiry: "2weeks" },
-    { name: "bacon", expiry: "2weeks" },
-    { name: "cabbage", expiry: "2weeks" },
-    { name: "carrots", expiry: "2weeks" },
-    { name: "watermelon", expiry: "2weeks" },
-  ]);
+  const [pantry, setPantry] = useState(
+    JSON.parse(localStorage.getItem("pantry")) || []
+  ); //{ name: "ham", expiry: "2weeks" }
 
   const [showEdit, setShowEdit] = useState(false);
   const [showdelete, setShowdelete] = useState(false);
 
+  useEffect(() => {
+    localStorage.setItem("pantry", JSON.stringify(pantry));
+  }, [pantry]);
+
   const handleAddItem = ({ itemName, expiry }) => {
-    setPantry([...pantry, { name: itemName, expiry }]);
+    const newPantry = [...pantry, { name: itemName, expiry }];
+    setPantry(newPantry);
   };
-  //List or card?
+
+  //List or card? TODO: Not sure why ellipsis doesnt appear when title overflow.
   const pantryList = (
     <StyledListGroup>
       {pantry.map((item, key) => (
         <StyledItem key={key}>
           <Image
             style={{ height: "100%", width: "5rem" }}
-            src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name}.jpg`}
+            src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name.toLowerCase()}.jpg`}
           />
-          <div style={{ padding: "1rem", overflow: "hidden" }}>
-            <h4 style={{ marginRight: "1rem" }}>{item.name}</h4>
+          <div
+            style={{
+              padding: "1rem",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <h4
+              style={{
+                marginRight: "1rem",
+              }}
+            >
+              {item.name}
+            </h4>
             <p style={{ color: "grey" }}>{item.expiry}</p>
           </div>
           {showdelete ? (
@@ -87,7 +101,6 @@ export default function Profile() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          flex: "0 1 10%",
           marginBottom: "1rem",
           flexWrap: "wrap",
           flexDirection: "column",

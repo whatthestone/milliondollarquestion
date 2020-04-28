@@ -10,7 +10,7 @@ const StyledBox = styled.div`
   margin-right: 3rem;
 `;
 
-const MyDropdownButon = ({ title, optionList, setOption, option }) => {
+const MyDropdownButton = ({ title, optionList, setOption, option }) => {
   return (
     <StyledBox>
       <DropdownButton
@@ -25,4 +25,4 @@ const MyDropdownButon = ({ title, optionList, setOption, option }) => {
   );
 };
 
-export default MyDropdownButon;
+export default MyDropdownButton;

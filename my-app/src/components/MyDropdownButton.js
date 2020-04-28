@@ -17,8 +17,10 @@ const MyDropdownButton = ({ title, optionList, setOption, option }) => {
         id="dropdown-basic-button"
         title={option ? option : title}
       >
-        {optionList.map((type) => (
-          <Dropdown.Item onClick={() => setOption(type)}>{type}</Dropdown.Item>
+        {optionList.map((type, index) => (
+          <Dropdown.Item key={index} onClick={() => setOption(type)}>
+            {type}
+          </Dropdown.Item>
         ))}
       </DropdownButton>
     </StyledBox>

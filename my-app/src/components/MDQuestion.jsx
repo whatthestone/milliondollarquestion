@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MyDropdownButon from "./MyDropdownButton";
+import MyDropdownButton from "./MyDropdownButton";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -18,7 +18,6 @@ const StyledQnContainer = styled.div`
 
 const MDQuestion = ({ setPreference, setShowAns }) => {
   //State for MDQuestion
-  const pref = JSON.parse(localStorage.getItem("preference"));
   const [mealType, setMealType] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
   const [cuisine, setCuisine] = useState(null);
@@ -32,15 +31,8 @@ const MDQuestion = ({ setPreference, setShowAns }) => {
           difficulty === "Easy" ? "20" : difficulty === "Medium" ? "40" : "60",
       };
 
-      const rawPreference = {
-        mealType,
-        cuisine,
-        difficulty
-      };
-
       setPreference(preference);
       setShowAns(true);
-      // localStorage.setItem("preference", JSON.stringify(rawPreference));
     }
   }, [mealType, difficulty, cuisine]);
 
@@ -96,19 +88,19 @@ const MDQuestion = ({ setPreference, setShowAns }) => {
     <StyledContainer>
       <h3>What are you feeling today?</h3>
       <StyledQnContainer>
-        <MyDropdownButon
+        <MyDropdownButton
           title="Meal type"
           optionList={mealTypes}
           setOption={setMealType}
           option={mealType}
         />
-        <MyDropdownButon
+      <MyDropdownButton
           title="Difficulty"
           optionList={diffTypes}
           setOption={setDifficulty}
           option={difficulty}
         />
-        <MyDropdownButon
+      <MyDropdownButton
           title="Cuisine"
           optionList={cuisineTypes}
           setOption={setCuisine}

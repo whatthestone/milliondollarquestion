@@ -21,36 +21,28 @@ const SubHeader = styled.p`
   text-align: center;
 `;
 
-class MDAnswer extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+const MDAnswer = ({ recipe, onEdit }) => {
+  return (
+    <Container style={{ marginTop: "2rem" }}>
+      <div>
+        <Header>The Million Dollar Answer</Header>
+        <SubHeader>This is what we suggest: </SubHeader>
+      </div>
+      <RecommendedCard recipe={recipe} />
+      <Row>
+        <OptionSelectionWrapper>
+          <SButton variant="outline-primary" onClick={onEdit}>
+            Edit
+          </SButton>
+          <SButton>SAVE</SButton>
+          <SButton variant="outline-primary">Another</SButton>
+        </OptionSelectionWrapper>
+      </Row>
 
-  render() {
-    const recipeId = this.props.recipeId;
-
-    return (
-      <Container style={{ "margin-top": "2rem" }}>
-        <div>
-          <Header>The Million Dollar Answer</Header>
-          <SubHeader>This is what we suggest: </SubHeader>
-        </div>
-        <RecommendedCard recipeId={recipeId} />
-        <Row>
-          <OptionSelectionWrapper>
-            <SButton variant="outline-primary" onClick={this.props.onEdit}>
-              Edit
-            </SButton>
-            <SButton>SAVE</SButton>
-            <SButton variant="outline-primary">Another</SButton>
-          </OptionSelectionWrapper>
-        </Row>
-
-        <h4>Similar Recipes</h4>
-        <p>infinite scroll</p>
-      </Container>
-    );
-  }
-}
+      <h4>Similar Recipes</h4>
+      <p>infinite scroll</p>
+    </Container>
+  );
+};
 
 export default MDAnswer;

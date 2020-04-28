@@ -18,7 +18,7 @@ const Main = ({ url }) => {
   //Stores state of variables required for fetch. Modern way of state using hooks.
   const [data, setData] = useState(null);
   const [recipe, setRecipe] = useState(
-    JSON.parse(localStorage.getItem("recipe")) || fakeRecipe
+    JSON.parse(localStorage.getItem("recipe")) || null
   );
   //If recipeid in localstorage initialise it
   const [recipeId, setRecipeId] = useState(null);
@@ -27,14 +27,21 @@ const Main = ({ url }) => {
     maxReadyTime: null,
     cuisine: null,
   });
+  
+  const [pantry] = useState(JSON.parse(localStorage.getItem("pantry")) || []);
   const [showAns, setShowAns] = useState(null);
 
   useEffect(() => {
     //Only fetch if all not null
     const { mealType, maxReadyTime, cuisine } = preference;
+
     if (mealType && maxReadyTime && cuisine) {
+      //string all the ingredients seperated by comma
+      //TODO check why api returning zero results if stringPantry have many items. I think it only returns recipe that use all the ingredients under "includeIngredients"
+      const stringPantry = pantry.map((item) => `${item.name}`).join(",");
+      console.log(stringPantry);
       fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
+        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=${stringPantry}&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
       )
         .then((res) => {
           return res.status > 300 //use fakeresults if no api key too
@@ -47,6 +54,7 @@ const Main = ({ url }) => {
           let recipeId = null;
           // console.log(newData);
           //set state of data
+
           setData(newData);
 
           if (newData?.length > 0) {
@@ -78,6 +86,7 @@ const Main = ({ url }) => {
       `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
     );
   }, [recipeId]);
+
 
   const history = useHistory();
   const handleEdit = () => {

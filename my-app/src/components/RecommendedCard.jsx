@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Card, Button } from "react-bootstrap";
 import Recipe from "./Recipe";
-import fakeRecipe from "../data/recipe.json";
 
 const SCard = styled(Card)`
   max-width: 600px;
@@ -58,46 +57,26 @@ const StyledCardBody = styled(Card.Body)`
   justify-content: center;
 `;
 
-const RecommendedCard = ({ recipeId }) => {
-  const [recipe, setRecipe] = useState(null);
-
-  useEffect(() => {
-    fetch(
-      `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
-    )
-      .then((res) => {
-        return res.status > 300 ? fakeRecipe : res.json();
-      })
-      .then((json) => {
-        setRecipe(json);
-      });
-  }, [recipeId]);
-
+const RecommendedCard = ({ recipe }) => {
   return (
-    <>
-      {recipe ? (
-        <SCard>
-          <StyledCardImg variant="top" src={recipe.image} />
-          <StyledCardBody>
-            <SCardTitle>{recipe.title}</SCardTitle>
-            <Link href="www.kitchen.com/recipe" target="_blank">
-              www.kitchen.com
-            </Link>
-            <Card.Text>
-              <Recipe
-                key={recipe.id}
-                id={recipe.id}
-                recipeIngredients={recipe.extendedIngredients}
-                recipeMethod={recipe.analyzedInstructions}
-              />
-            </Card.Text>
-            <Button variant="primary" href={recipe.sourceUrl} target="_blank">
-              Go to site
-            </Button>
-          </StyledCardBody>
-        </SCard>
-      ) : null}
-    </>
+    <SCard>
+      <StyledCardImg variant="top" src={recipe.image} />
+      <StyledCardBody>
+        <SCardTitle>{recipe.title}</SCardTitle>
+        <Link href="www.kitchen.com/recipe" target="_blank">
+          www.kitchen.com
+        </Link>
+        <Recipe
+          key={recipe.id}
+          id={recipe.id}
+          recipeIngredients={recipe.extendedIngredients}
+          recipeMethod={recipe.analyzedInstructions}
+        />
+        <Button variant="primary" href={recipe.sourceUrl} target="_blank">
+          Go to site
+        </Button>
+      </StyledCardBody>
+    </SCard>
   );
 };
 

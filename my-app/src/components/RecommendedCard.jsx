@@ -48,7 +48,7 @@ const StyledCardImg = styled(Card.Img)`
   width: 100%;
   height: 20rem;
   object-fit: cover;
-  background: no-repeat top;
+  background: no-repeat center;
 `;
 
 const StyledCardBody = styled(Card.Body)`

@@ -27,7 +27,7 @@ class App extends Component {
           */}
           <Switch>
             <Route exact path="/" component={Dashboard}></Route>
-            <Route path="/profile" component={Profile}></Route>
+            <Route path="/pantry" component={Profile}></Route>
             <Route path="/main" component={MainRouter}></Route>
           </Switch>
         </div>

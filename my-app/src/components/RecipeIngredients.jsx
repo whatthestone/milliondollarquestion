@@ -19,8 +19,8 @@ class RecipeIngredients extends Component {
         <h4>Ingredients</h4>
         <ul>
           {ingredients &&
-            ingredients.map((ingredient) => {
-              return <li key={ingredient.id}>{ingredient.original}</li>;
+            ingredients.map((ingredient, index) => {
+              return <li key={index}>{ingredient.original}</li>;
             })}
         </ul>
       </Wrapper>

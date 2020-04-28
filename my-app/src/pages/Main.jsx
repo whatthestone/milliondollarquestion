@@ -2,27 +2,32 @@ import React, { useState, useEffect } from "react";
 import MDAnswer from "../components/MDAnswer";
 import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
+import fakeRecipe from "../data/recipe.json";
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
   Redirect,
+  useHistory
 } from "react-router-dom";
 
 //Using functional component
 const Main = ({ url }) => {
   //Stores state of variables required for fetch. Modern way of state using hooks.
   const [data, setData] = useState(null);
-  //If recipeid in localstorage initialise it
-  const [recipeId, setRecipeId] = useState(
-    localStorage.getItem("recipeId") || null
+  const [recipe, setRecipe] = useState(
+    JSON.parse(localStorage.getItem("recipe")) || fakeRecipe
   );
+  //If recipeid in localstorage initialise it
+  const [recipeId, setRecipeId] = useState(null);
   const [preference, setPreference] = useState({
     mealType: null,
     maxReadyTime: null,
     cuisine: null,
   });
+  const [showAns, setShowAns] = useState(null);
 
   useEffect(() => {
     //Only fetch if all not null
@@ -38,42 +43,64 @@ const Main = ({ url }) => {
         })
         .then((json) => {
           let newData = {};
-          newData = json || fakeResults;
-          console.log(newData);
+          newData = json.results || fakeResults.results;
+          let recipeId = null;
+          // console.log(newData);
           //set state of data
-          setData(newData.results);
+          setData(newData);
+
+          if (newData?.length > 0) {
+            const randomRecipe =
+              newData[Math.floor(Math.random() * newData.length)];
+            setRecipeId(randomRecipe.id);
+            //Store recipeId in localstorage
+            localStorage.setItem("recipeId", randomRecipe.id);
+            recipeId = randomRecipe.id;
+          }
+
+          return fetch(
+            `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
+          );
           //TODO: Ask question again if no result.
+        })
+        .then((res) => {
+          return res.status > 300 ? fakeRecipe : res.json();
+        })
+        .then((json) => {
+          setRecipe(json);
+          localStorage.setItem("recipe", JSON.stringify(json));
         });
     }
   }, [preference]);
 
-  //Update recipe if data !=null and length > 0
   useEffect(() => {
-    if (data?.length > 0) {
-      const randomRecipe = data[Math.floor(Math.random() * data.length)];
-      setRecipeId(randomRecipe.id);
-      //Store recipeId in localstorage
-      localStorage.setItem("recipeId", randomRecipe.id);
-    }
-  }, [data]);
+    fetch(
+      `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=${process.env.REACT_APP_APIKEY}`
+    );
+  }, [recipeId]);
 
+  const history = useHistory();
+  const handleEdit = () => {
+    history.push(`${url}/qn`);
+  }
+
+  //ONLY if showAns (a question is asked), redirect to ans page
   return (
     <div>
-      {recipeId ? (
-        <div>
-          <Redirect to={{ pathname: `${url}/answer` }} />
-          <Route path={`${url}/answer`}>
-            <MDAnswer recipeId={recipeId} onEdit={() => setRecipeId(null)} />
-          </Route>
-        </div>
-      ) : (
-        <div>
+      {showAns && <Redirect to={{ pathname: `${url}/answer` }} />}
+      <Switch>
+        <Route path={`${url}/answer`}>
+          <MDAnswer recipe={recipe} onEdit={handleEdit} />
+        </Route>
+
+        <Route path={`${url}/qn`}>
+          <MDQuestion setPreference={setPreference} setShowAns={setShowAns} />
+        </Route>
+
+        <Route exact path={`${url}`}>
           <Redirect to={{ pathname: `${url}/qn` }} />
-          <Route path={`${url}/qn`}>
-            <MDQuestion setPreference={setPreference} />
-          </Route>
-        </div>
-      )}
+        </Route>
+      </Switch>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import MyDropdownButon from "./MyDropdownButton";
+import MyDropdownButton from "./MyDropdownButton";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ const StyledQnContainer = styled.div`
   margin: 2rem;
 `;
 
-const MDQuestion = ({ setPreference }) => {
+const MDQuestion = ({ setPreference, setShowAns }) => {
   //State for MDQuestion
   const [mealType, setMealType] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
@@ -32,6 +32,7 @@ const MDQuestion = ({ setPreference }) => {
       };
 
       setPreference(preference);
+      setShowAns(true);
     }
   }, [mealType, difficulty, cuisine]);
 
@@ -87,19 +88,19 @@ const MDQuestion = ({ setPreference }) => {
     <StyledContainer>
       <h3>What are you feeling today?</h3>
       <StyledQnContainer>
-        <MyDropdownButon
+        <MyDropdownButton
           title="Meal type"
           optionList={mealTypes}
           setOption={setMealType}
           option={mealType}
         />
-        <MyDropdownButon
+      <MyDropdownButton
           title="Difficulty"
           optionList={diffTypes}
           setOption={setDifficulty}
           option={difficulty}
         />
-        <MyDropdownButon
+      <MyDropdownButton
           title="Cuisine"
           optionList={cuisineTypes}
           setOption={setCuisine}

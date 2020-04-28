@@ -52,7 +52,6 @@ const Main = ({ url }) => {
           newData = json.results || fakeResults.results;
 
           if (newData?.length > 0) {
-            // console.log(newData);
             //set state of data
             setData(newData);
             localStorage.setItem("allRecipes", JSON.stringify(newData));

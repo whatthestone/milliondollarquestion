@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Row, Container, Button } from "react-bootstrap";
 import RecommendedCard from "../components/RecommendedCard";

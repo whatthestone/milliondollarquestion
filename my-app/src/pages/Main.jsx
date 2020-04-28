@@ -15,8 +15,10 @@ import {
 
 //Using functional component
 const Main = ({ url }) => {
-  //Stores state of variables required for fetch. Modern way of state using hooks.
-  const [data, setData] = useState(null);
+  //cache data to show similiar recipes
+  const [data, setData] = useState(
+    JSON.parse(localStorage.getItem("allRecipes")) || null
+  );
   const [recipe, setRecipe] = useState(
     JSON.parse(localStorage.getItem("recipe")) || null
   );
@@ -28,7 +30,7 @@ const Main = ({ url }) => {
   });
 
   const [pantry] = useState(JSON.parse(localStorage.getItem("pantry")) || []);
-  const [showAns, setShowAns] = useState(null);
+  const [showAns, setShowAns] = useState(false);
 
   useEffect(() => {
     const { mealType, maxReadyTime, cuisine } = preference;
@@ -48,11 +50,13 @@ const Main = ({ url }) => {
         .then((json) => {
           let newData = {};
           newData = json.results || fakeResults.results;
-          // console.log(newData);
-          //set state of data
-          setData(newData);
 
           if (newData?.length > 0) {
+            // console.log(newData);
+            //set state of data
+            setData(newData);
+            localStorage.setItem("allRecipes", JSON.stringify(newData));
+
             const randomRecipe =
               newData[Math.floor(Math.random() * newData.length)];
             setRecipeId(randomRecipe.id);
@@ -87,13 +91,36 @@ const Main = ({ url }) => {
     setShowAns(false);
   };
 
+  const handleAnother = () => {
+    //randomise recipe onclick another
+    if (data) {
+      const randomRecipe = data[Math.floor(Math.random() * data.length)];
+      console.log(randomRecipe);
+      localStorage.setItem("recipe", JSON.stringify(randomRecipe));
+      setRecipeId(randomRecipe.id);
+    } else {
+      handleEdit(); //ask user to key in preference again
+    }
+  };
+
+  const handleChangecard = (id) => {
+    setRecipeId(id);
+  };
+
   //ONLY if showAns (a question is asked), redirect to ans page
+  //TODO redirect user from answer to qns if recipe is null
   return (
     <div>
       {showAns && <Redirect to={{ pathname: `${url}/answer` }} />}
       <Switch>
         <Route path={`${url}/answer`}>
-          <MDAnswer recipe={recipe} onEdit={handleEdit} />
+          <MDAnswer
+            recipe={recipe}
+            allRecipes={data}
+            onEdit={handleEdit}
+            onAnother={handleAnother}
+            changeCard={handleChangecard}
+          />
         </Route>
 
         <Route path={`${url}/qn`}>

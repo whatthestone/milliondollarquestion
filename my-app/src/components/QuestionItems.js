@@ -38,6 +38,7 @@ export default function QuestionItems({
       >
         {optionList.map((type) => (
           <StyledOptionBox
+            key={type}
             type={type}
             option={option}
             onClick={() => setOption(type)}

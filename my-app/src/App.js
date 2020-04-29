@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Main from "./pages/Main";
 import MyNav from "./components/MyNav";
+import Saved from "./pages/Saved";
 
 class App extends Component {
   render() {
@@ -27,6 +28,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Dashboard}></Route>
             <Route path="/pantry" component={Profile}></Route>
+            <Route path="/saved" component={Saved}></Route>
             <Route path="/main" component={MainRouter}></Route>
           </Switch>
         </div>

@@ -30,7 +30,7 @@ const StyledSRecipeBox = styled.div`
   flex-wrap: wrap;
 `;
 
-const MDAnswer = ({ recipe, onEdit, onAnother, allRecipes, changeCard }) => {
+const MDAnswer = ({ recipe, onEdit, onSave, onAnother, allRecipes, changeCard }) => {
   const SimiliarRecipes = allRecipes
     ? allRecipes
         .filter((r) => r.id != recipe.id)
@@ -53,7 +53,7 @@ const MDAnswer = ({ recipe, onEdit, onAnother, allRecipes, changeCard }) => {
           <SButton variant="outline-primary" onClick={onEdit}>
             Edit
           </SButton>
-          <SButton>SAVE</SButton>
+          <SButton onClick={onSave}>SAVE</SButton>
           <SButton variant="outline-primary" onClick={onAnother}>
             Another
           </SButton>

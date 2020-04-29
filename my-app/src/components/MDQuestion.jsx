@@ -47,52 +47,73 @@ const MDQuestion = ({ setPreference }) => {
     "breakfast",
     "main course",
     "side dish",
-    "salad",
-    "soup",
-    "fingerfood",
+    // "salad",
+    // "soup",
+    // "fingerfood",
     "snack",
     "dessert",
-    "appetizer",
-    "bread",
-    "beverage",
-    "sauce",
-    "marinade",
-    "drink",
+    // "appetizer",
+    // "bread",
+    // "beverage",
+    // "sauce",
+    // "marinade",
+    // "drink",
   ];
 
   const diffTypes = ["Easy", "Medium", "Challenging"];
 
   const cuisineTypes = [
-    "African",
     "American",
-    "British",
-    "Cajun",
-    "Caribbean",
-    "Chinese",
-    "Eastern European",
     "European",
-    "French",
-    "German",
-    "Greek",
-    "Indian",
-    "Irish",
-    "Italian",
+    "Chinese",
     "Japanese",
-    "Jewish",
-    "Korean",
-    "Latin American",
-    "Mediterranean",
-    "Mexican",
-    "Middle Eastern",
-    "Nordic",
-    "Southern",
-    "Spanish",
+    "Indian",
+    "French",
+    "Italian",
     "Thai",
     "Vietnamese",
+    "Korean",
+    "British",
+    "German",
+    "Greek",
+    "Irish",
+    // "Jewish",
+    // "Latin American",
+    // "Mediterranean",
+    "Mexican",
+    // "Middle Eastern",
+    // "Nordic",
+    // "Southern",
+    "Spanish",
+    // "African",
+    // "Cajun",
+    // "Caribbean",
+    "Eastern European",
   ];
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div
+      style={{
+        padding: "1rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "2rem",
+        }}
+      >
+        <h3
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          What are you in the mood for?
+        </h3>
+      </div>
       <QuestionItems
         optionList={mealTypes}
         title={"Meal Type"}

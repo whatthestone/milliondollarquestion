@@ -16,7 +16,7 @@ const StyledOptionBox = styled.div`
   transition: transform 0.3s;
 
   &:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
 `;
 

@@ -15,6 +15,9 @@ const Main = ({ url }) => {
   const [recipe, setRecipe] = useState(
     JSON.parse(localStorage.getItem("recipe")) || null
   );
+  const [savedRecipes, setSavedRecipes] = useState(
+    JSON.parse(localStorage.getItem("savedRecipes")) || null
+  );
   const [recipeId, setRecipeId] = useState(null);
   const [preference, setPreference] = useState({
     mealType: null,
@@ -83,6 +86,23 @@ const Main = ({ url }) => {
     setShowAns(false);
   };
 
+  const handleSave = () => {
+    let savedRecipes = [];
+    //if localstorage has saved recipes, add it in and set state, else add it in
+    if (localStorage.getItem("savedRecipes")) {
+      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
+      console.log(savedRecipes);
+      savedRecipes.push(recipe);
+      localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
+      setSavedRecipes(savedRecipes);
+    } else {
+      savedRecipes.push(recipe);
+      localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
+      setSavedRecipes(savedRecipes.push(recipe));
+    }
+    console.log(savedRecipes);
+  };
+
   const handleAnother = () => {
     //randomise recipe onclick another
     if (data) {
@@ -110,6 +130,7 @@ const Main = ({ url }) => {
             recipe={recipe}
             allRecipes={data}
             onEdit={handleEdit}
+            onSave={handleSave}
             onAnother={handleAnother}
             changeCard={handleChangecard}
           />

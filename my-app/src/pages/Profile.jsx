@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button, ListGroup, Card, Image } from "react-bootstrap";
+import { Button, ListGroup, Image, Nav, Tab, Row, Col } from "react-bootstrap";
 import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
+import moment from "moment";
 
-const StyledListGroup = styled(ListGroup)`
-  display: flex;
-`;
-
-const StyledContainer = styled.div`
-  padding: 2rem;
-`;
+const StyledListGroup = styled(ListGroup)``;
 
 const StyledItem = styled(ListGroup.Item)`
   display: flex;
   flexdirection: row;
-  justify-content: flex-start;
-  padding: 0;
-  height: 6rem;
+  justify-content: space-between;
+  padding: 0.5rem;
+  height: "auto";
 `;
 
 const StyledButton = styled(Button)`
@@ -25,84 +20,121 @@ const StyledButton = styled(Button)`
 
 export default function Profile() {
   const [pantry, setPantry] = useState(
-    JSON.parse(localStorage.getItem("pantry")) || []
-  ); //{ name: "ham", expiry: "2weeks" }
-
+    JSON.parse(localStorage.getItem("pantry")) || [
+      { name: "rice", expiry: "1587513600", location: "dry pantry" },
+      { name: "egg", expiry: "1588204800", location: "dry pantry" },
+      { name: "ham", expiry: "1588377600", location: "fridge" },
+      { name: "ice cream", expiry: "1588742721", location: "freezer" },
+      { name: "cheese", expiry: "1588742721", location: "fridge" },
+      { name: "bacon", expiry: "1588742721", location: "fridge" },
+      { name: "celery", expiry: "1588742721", location: "fridge" },
+      { name: "carrots", expiry: "1588118400", location: "fridge" },
+    ]
+  );
   const [showEdit, setShowEdit] = useState(false);
   const [showdelete, setShowdelete] = useState(false);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     localStorage.setItem("pantry", JSON.stringify(pantry));
   }, [pantry]);
 
-  const handleAddItem = ({ itemName, expiry }) => {
-    const newPantry = [...pantry, { name: itemName, expiry }];
+  const handleAddItem = ({ itemName, expiry, location }) => {
+    const newPantry = [...pantry, { name: itemName, expiry, location }];
     setPantry(newPantry);
   };
 
   //List or card? TODO: Not sure why ellipsis doesnt appear when title overflow.
   const pantryList = (
     <StyledListGroup>
-      {pantry.map((item, key) => (
-        <StyledItem key={key}>
-          <Image
-            style={{ height: "100%", width: "5rem" }}
-            src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name.toLowerCase()}.jpg`}
-          />
-          <div
-            style={{
-              padding: "1rem",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-            }}
-          >
-            <h4
-              style={{
-                marginRight: "1rem",
-              }}
-            >
-              {item.name}
-            </h4>
-            <p style={{ color: "grey" }}>{item.expiry}</p>
-          </div>
-          {showdelete ? (
-            <Button
-              variant="danger"
-              style={{ marginRight: 0, marginLeft: "auto", borderRadius: 0 }}
-              onClick={() =>
-                setPantry([...pantry.filter((i) => i.name !== item.name)])
-              }
-            >
-              Remove
-            </Button>
-          ) : null}
-        </StyledItem>
-      ))}
+      {pantry
+        .filter((item) => (filter === "all" ? item : filter === item.location))
+        .map((item, key) => (
+          <StyledItem key={key}>
+            <div style={{ display: "flex" }}>
+              <Image
+                style={{ height: "3em", width: "3rem" }}
+                src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name.toLowerCase()}.jpg`}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  marginLeft: ".5rem",
+                  marginRight: ".5rem",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                }}
+              >
+                <a style={{ fontWeight: "bold" }}>{item.name}</a>
+                <a
+                  style={{
+                    color: moment.unix(item.expiry).isBefore()
+                      ? "red"
+                      : moment
+                          .unix(item.expiry)
+                          .isBefore(moment().add(2, "days"))
+                      ? "#f90"
+                      : "green",
+                    fontWeight: "600",
+                  }}
+                >
+                  {moment.unix(item.expiry).calendar()}
+                </a>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                  flexDirection: "column",
+                }}
+              >
+                <a
+                  style={{
+                    color: "grey",
+                    fontWeight: "600",
+                    textAlign: "right",
+                  }}
+                >
+                  {item.location}
+                </a>
+              </div>
+              {showdelete ? (
+                <Button
+                  variant="danger"
+                  style={{
+                    width: "auto",
+                    height: "3rem",
+                    marginLeft: ".5rem",
+                  }}
+                  onClick={() =>
+                    setPantry([...pantry.filter((i) => i.name !== item.name)])
+                  }
+                >
+                  Remove
+                </Button>
+              ) : null}
+            </div>
+          </StyledItem>
+        ))}
     </StyledListGroup>
   );
 
-  // const pantryList = pantry.map((item) => (
-  //   <StyledCard>
-  //     <StyledCardImg
-  //       variant="top"
-  //       src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name}.jpg`}
-  //     />
-  //     <Card.Body>
-  //       <Card.Title>{item.name}</Card.Title>
-  //       <Card.Subtitle style={{ color: "grey" }}>{item.expiry}</Card.Subtitle>
-  //     </Card.Body>
-  //   </StyledCard>
-  // ));
   return (
-    <StyledContainer>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: "2rem .5rem 0 .5rem",
+      }}
+    >
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
-          marginBottom: "1rem",
-          flexWrap: "wrap",
+          marginBottom: "2rem",
           flexDirection: "column",
         }}
       >
@@ -121,14 +153,54 @@ export default function Profile() {
             Delete
           </StyledButton>
         </div>
-
-        <PantryAddModal
-          show={showEdit}
-          onHide={() => setShowEdit(!showEdit)}
-          handleAddItem={handleAddItem}
-        />
       </div>
-      {pantryList}
-    </StyledContainer>
+      <Tab.Container id="left-tabs-example" defaultActiveKey="all">
+        <Row>
+          <Col sm={3}>
+            <Nav variant="pills" className="flex-column">
+              <Nav.Item>
+                <Nav.Link eventKey="all" onClick={() => setFilter("all")}>
+                  All
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="fridge" onClick={() => setFilter("fridge")}>
+                  Fridge
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  eventKey="freeze"
+                  onClick={() => setFilter("freezer")}
+                >
+                  Freezer
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link
+                  eventKey="dry pantry"
+                  onClick={() => setFilter("dry pantry")}
+                >
+                  Dry Pantry
+                </Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Col>
+          <Col sm={9}>
+            <Tab.Content>
+              <Tab.Pane eventKey="all">{pantryList}</Tab.Pane>
+              <Tab.Pane eventKey="fridge">{pantryList}</Tab.Pane>
+              <Tab.Pane eventKey="freeze">{pantryList}</Tab.Pane>
+              <Tab.Pane eventKey="dry pantry">{pantryList}</Tab.Pane>
+            </Tab.Content>
+          </Col>
+        </Row>
+      </Tab.Container>
+      <PantryAddModal
+        show={showEdit}
+        onHide={() => setShowEdit(!showEdit)}
+        handleAddItem={handleAddItem}
+      />
+    </div>
   );
 }

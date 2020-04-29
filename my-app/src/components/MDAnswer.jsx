@@ -33,7 +33,7 @@ const StyledSRecipeBox = styled.div`
 const MDAnswer = ({ recipe, onEdit, onAnother, allRecipes, changeCard }) => {
   const SimiliarRecipes = allRecipes
     ? allRecipes
-        .filter((r) => r.id != recipe.id)
+        .filter((r) => r.id !== recipe.id)
         .map((r, index) => (
           <SimiliarRecipeCard key={index} recipe={r} changeCard={changeCard} />
         ))

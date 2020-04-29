@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import MyDropdownButton from "./MyDropdownButton";
+// import styled from "styled-components";
+// import MyDropdownButton from "./MyDropdownButton";
 import QuestionItems from "./QuestionItems";
 
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
+// const StyledContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
-const StyledQnContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 2rem;
-`;
+// const StyledQnContainer = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: center;
+//   margin: 2rem;
+// `;
 
 const MDQuestion = ({ setPreference }) => {
   //State for MDQuestion

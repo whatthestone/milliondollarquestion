@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+import moment from "moment";
 
 function PantryAddModal(props) {
   const [itemName, setItemName] = useState("");
   const [expiry, setExpiry] = useState("1 week");
+  const [location, setLocation] = useState("fridge");
   const [validated, setValidated] = useState(false);
 
   const submit = (e) => {
@@ -13,11 +15,33 @@ function PantryAddModal(props) {
     // TODO: validation not working properly
     if (form.checkValidity()) {
       setValidated(true);
-      props.handleAddItem({ itemName, expiry });
-      props.onHide();
-      setItemName("");
-      setExpiry("1 week");
+      let expiryTimestamp = moment().unix();
+      switch (expiry) {
+        case "1 week":
+          expiryTimestamp = moment().add(1, "week").unix();
+          break;
+        case "2 weeks":
+          expiryTimestamp = moment().add(2, "week").unix();
+          break;
+        case "3 weeks":
+          expiryTimestamp = moment().add(3, "week").unix();
+          break;
+        case "1 month":
+          expiryTimestamp = moment().add(1, "month").unix();
+          break;
+        case "3 months":
+          expiryTimestamp = moment().add(3, "month").unix();
+          break;
+
+        default:
+          break;
+      }
+      props.handleAddItem({ itemName, expiry: expiryTimestamp, location });
     }
+    props.onHide();
+    setItemName("");
+    setLocation("fridge");
+    setExpiry("1 week");
   };
 
   return (
@@ -48,6 +72,18 @@ function PantryAddModal(props) {
             </Form.Control.Feedback>
           </Form.Group>
 
+          <Form.Group controlId="formlocation">
+            <Form.Label>Location</Form.Label>
+            <Form.Control
+              as="select"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              <option>fridge</option>
+              <option>freezer</option>
+              <option>dry pantry</option>
+            </Form.Control>
+          </Form.Group>
           <Form.Group controlId="formusedby">
             <Form.Label>Used by</Form.Label>
             <Form.Control

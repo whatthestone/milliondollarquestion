@@ -15,7 +15,7 @@ const media = mediaHelper({
   sm: 320,
   md: 768,
   lg: 992,
-  xl: 1240
+  xl: 1200
 });
 
 const SCardColumns = styled(CardColumns)`

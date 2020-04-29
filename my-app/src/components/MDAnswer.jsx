@@ -30,7 +30,14 @@ const StyledSRecipeBox = styled.div`
   flex-wrap: wrap;
 `;
 
-const MDAnswer = ({ recipe, onEdit, onSave, onAnother, allRecipes, changeCard }) => {
+const MDAnswer = ({
+  recipe,
+  onEdit,
+  onSave,
+  onAnother,
+  allRecipes,
+  changeCard,
+}) => {
   const SimiliarRecipes = allRecipes
     ? allRecipes
         .filter((r) => r.id !== recipe.id)
@@ -59,7 +66,7 @@ const MDAnswer = ({ recipe, onEdit, onSave, onAnother, allRecipes, changeCard })
           </SButton>
         </OptionSelectionWrapper>
       </Row>
-      {SimiliarRecipes ? (
+      {SimiliarRecipes.length > 0 ? (
         <div
           style={{
             marginTop: "2rem",

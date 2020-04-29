@@ -4,8 +4,6 @@ import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
 import moment from "moment";
 
-const StyledListGroup = styled(ListGroup)``;
-
 const StyledItem = styled(ListGroup.Item)`
   display: flex;
   flexdirection: row;
@@ -46,7 +44,7 @@ export default function Profile() {
 
   //List or card? TODO: Not sure why ellipsis doesnt appear when title overflow.
   const pantryList = (
-    <StyledListGroup>
+    <ListGroup>
       {pantry
         .filter((item) => (filter === "all" ? item : filter === item.location))
         .map((item, key) => (
@@ -87,7 +85,7 @@ export default function Profile() {
                 style={{
                   display: "flex",
                   justifyContent: "flex-end",
-                  alignItems: "flex-end",
+                  alignItems: "center",
                   flexDirection: "column",
                 }}
               >
@@ -100,26 +98,25 @@ export default function Profile() {
                 >
                   {item.location}
                 </a>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  {showdelete ? (
+                    <Button
+                      variant="danger"
+                      onClick={() =>
+                        setPantry([
+                          ...pantry.filter((i) => i.name !== item.name),
+                        ])
+                      }
+                    >
+                      Remove
+                    </Button>
+                  ) : null}
+                </div>
               </div>
-              {showdelete ? (
-                <Button
-                  variant="danger"
-                  style={{
-                    width: "auto",
-                    height: "3rem",
-                    marginLeft: ".5rem",
-                  }}
-                  onClick={() =>
-                    setPantry([...pantry.filter((i) => i.name !== item.name)])
-                  }
-                >
-                  Remove
-                </Button>
-              ) : null}
             </div>
           </StyledItem>
         ))}
-    </StyledListGroup>
+    </ListGroup>
   );
 
   return (
@@ -127,7 +124,7 @@ export default function Profile() {
       style={{
         width: "100%",
         height: "100%",
-        padding: "2rem .5rem 0 .5rem",
+        padding: "2rem .5rem .5rem 1rem",
       }}
     >
       <div
@@ -141,13 +138,13 @@ export default function Profile() {
         <h2>Your pantry</h2>
         <div style={{ display: "flex", justifyContent: "flex-between" }}>
           <StyledButton
-            variant="success"
+            variant="outline-success"
             onClick={() => setShowEdit(!showEdit)}
           >
             Add
           </StyledButton>
           <StyledButton
-            variant="danger"
+            variant="outline-danger"
             onClick={() => setShowdelete(!showdelete)}
           >
             Delete

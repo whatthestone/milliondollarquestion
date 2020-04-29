@@ -2,14 +2,16 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledOptionBox = styled.div`
-  height: 3.5rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
   margin-top: 1rem;
   border: 1px solid
-    ${({ type, option }) => (type === option ? "green" : "black")};
+    ${({ type, option }) => (type === option ? "#ff6f3c" : "#303841")};
+  background-color: ${({ type, option }) =>
+    type === option ? "#ff6f3c" : "white"};
   border-radius: 0.5rem;
   padding: 0.5rem;
   cursor: pointer;
@@ -27,13 +29,32 @@ export default function QuestionItems({
   option,
 }) {
   return (
-    <div style={{ marginBottom: "3rem" }}>
-      <h4 style={{ textAlign: "left" }}>{title}</h4>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginBottom: "3rem",
+      }}
+    >
+      <h4
+        style={{
+          textAlign: "left",
+          color: "black",
+          fontWeight: "bold",
+          fontSize: "2rem",
+        }}
+      >
+        {title}
+      </h4>
       <div
         style={{
           display: "flex",
-          whiteSpace: "nowrap",
-          overflow: "auto",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          maxWidth: "30rem",
+          // whiteSpace: "nowrap",
+          // overflow: "auto",
         }}
       >
         {optionList.map((type) => (
@@ -45,7 +66,7 @@ export default function QuestionItems({
           >
             <a
               style={{
-                color: type === option ? "green" : "black",
+                color: type === option ? "white" : "#303841",
                 fontWeight: "500",
               }}
             >

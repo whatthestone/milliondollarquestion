@@ -4,14 +4,7 @@ import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
 import fakeRecipe from "../data/recipe.json";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-} from "react-router-dom";
+import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 
 //Using functional component
 const Main = ({ url }) => {
@@ -38,7 +31,7 @@ const Main = ({ url }) => {
     if (mealType && maxReadyTime && cuisine) {
       //string all the ingredients seperated by comma
       //TODO check why api returning zero results if stringPantry have many items. I think it only returns recipe that use all the ingredients under "includeIngredients"
-      const stringPantry = pantry.map((item) => `${item.name}`).join(",");
+      // const stringPantry = pantry.map((item) => `${item.name}`).join(",");
       fetch(
         `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
       )

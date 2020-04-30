@@ -10,14 +10,12 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 const Main = ({ url }) => {
   //cache data to show similiar recipes
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("allRecipes")) || null
+    JSON.parse(localStorage.getItem("allRecipes")) || []
   );
   const [recipe, setRecipe] = useState(
-    JSON.parse(localStorage.getItem("recipe")) || null
+    JSON.parse(localStorage.getItem("recipe")) || []
   );
-  const [savedRecipes, setSavedRecipes] = useState(
-    JSON.parse(localStorage.getItem("savedRecipes")) || null
-  );
+
   const [recipeId, setRecipeId] = useState(null);
   const [preference, setPreference] = useState({
     mealType: null,
@@ -91,17 +89,28 @@ const Main = ({ url }) => {
     //if localstorage has saved recipes, add it in and set state, else add it in
     if (localStorage.getItem("savedRecipes")) {
       const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
-      console.log(savedRecipes);
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-      setSavedRecipes(savedRecipes);
     } else {
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-      setSavedRecipes(savedRecipes.push(recipe));
     }
-    console.log(savedRecipes);
   };
+
+  const handleUnsave = () => {
+    console.log(recipe);
+    let savedRecipes = [];
+    if (localStorage.getItem("savedRecipes")) {
+      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
+      let filteredRecipes = savedRecipes.filter(
+        (item) => item.id !== recipe.id
+      );
+      console.log(filteredRecipes);
+      localStorage.setItem("savedRecipes", JSON.stringify(filteredRecipes));
+    }
+  };
+
+  const isSavedRecipe = localStorage.getItem("savedRecipes") ? JSON.parse(localStorage.getItem("savedRecipes")).filter(item => item.id === recipe.id).length : 0
 
   const handleAnother = () => {
     //randomise recipe onclick another
@@ -128,10 +137,12 @@ const Main = ({ url }) => {
         <Route path={`${url}/answer`}>
           <MDAnswer
             recipe={recipe}
-            allRecipes={data}
+            isSavedRecipe={isSavedRecipe}
             onEdit={handleEdit}
             onSave={handleSave}
+            onUnsave={handleUnsave}
             onAnother={handleAnother}
+            allRecipes={data}
             changeCard={handleChangecard}
           />
         </Route>

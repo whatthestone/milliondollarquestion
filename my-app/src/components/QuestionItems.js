@@ -64,14 +64,14 @@ export default function QuestionItems({
             option={option}
             onClick={() => setOption(type)}
           >
-            <a
+            <span
               style={{
                 color: type === option ? "white" : "#303841",
                 fontWeight: "500",
               }}
             >
               {type}
-            </a>
+            </span>
           </StyledOptionBox>
         ))}
       </div>

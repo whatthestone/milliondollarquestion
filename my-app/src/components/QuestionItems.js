@@ -15,7 +15,7 @@ const StyledOptionBox = styled.div`
   border-radius: 0.5rem;
   padding: 0.5rem;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s, background-color 0.2s ease;
 
   &:hover {
     transform: translateY(-5px);
@@ -53,8 +53,6 @@ export default function QuestionItems({
           flexWrap: "wrap",
           justifyContent: "center",
           maxWidth: "30rem",
-          // whiteSpace: "nowrap",
-          // overflow: "auto",
         }}
       >
         {optionList.map((type) => (

@@ -16,32 +16,23 @@ const SCardTitle = styled.h4`
   padding-top: 0.5rem;
 `;
 
-// const SCardText = styled.div`
-//   padding: 20px;
-// `;
-
-// const NavArea = styled.div`
-//   padding: 20px;
-// `;
-
-// const Image = styled.img`
-//   width: 100%;
-//   height: 700px;
-//   background: ${(props) =>
-//     props.recipe &&
-//     `url(${JSON.stringify(props.recipe.image)})
-//     no-repeat center`};
-//   background-size: cover;
-//   padding: -15px;
-// `;
-
-// const ImgCol = styled(Col)`
-//   padding-right: 0px;
-// `;
-
 const Link = styled.a`
   text-decoration: underline;
   color: black;
+  align-self: flex-start;
+  width: fit-content;
+  vertical-align: -webkit-baseline-middle;
+`;
+
+const SRButton = styled(Button)`
+  align-self: flex-end;
+  width: fit-content;
+  display: flex;
+  float: right;
+  border-radius: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  vertical-align: -webkit-baseline-middle;
 `;
 
 const StyledCardImg = styled(Card.Img)`
@@ -69,21 +60,28 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave }) => {
       <StyledCardImg variant="top" src={recipe.image} />
       <StyledCardBody>
         <SCardTitle>{recipe.title}</SCardTitle>
-        {recipeSavedState ? (
-          <Button disabled>Saved</Button>
-        ) : (
-          <Button
-            onClick={() => {
-              onSave();
-              setRecipeSavedState(true);
-            }}
-          >
-            Save
-          </Button>
-        )}
-        <Link href="www.kitchen.com/recipe" target="_blank">
-          www.kitchen.com
-        </Link>
+        <span>
+          <Link href="www.kitchen.com/recipe" target="_blank">
+            www.kitchen.com
+          </Link>
+          {recipeSavedState ? (
+            <SRButton size="sm" variant="outline-info" disabled>
+              Saved
+            </SRButton>
+          ) : (
+            <SRButton
+              size="sm"
+              variant="info"
+              onClick={() => {
+                onSave();
+                setRecipeSavedState(true);
+              }}
+            >
+              Save
+            </SRButton>
+          )}
+        </span>
+
         <Recipe
           key={recipe.id}
           id={recipe.id}

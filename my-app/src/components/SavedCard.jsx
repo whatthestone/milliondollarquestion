@@ -11,6 +11,19 @@ const media = mediaHelper({
   xl: 1200,
 });
 
+const SCard = styled(Card)`
+  display: flex;
+  justify-content: center;
+  width: 13rem;
+  height: auto;
+  margin: 1rem;
+
+  @media only screen and (max-width: 479px) {
+    width: 100%;
+    padding: 1rem;
+  }
+`;
+
 const SCardText = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
@@ -40,25 +53,22 @@ const OButton = styled(Button)`
   top: 5px;
   left: 5px;
   z-index: 10;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition: opacity 0.5s, transform 0.5s;
+
+  ${SCard}:hover & {
+    opacity: 1;
+    transform: translateY(0);
+  }
 `;
 
 const SavedCard = ({ recipe, onDelete }) => {
-  const [cardHover, setCardHover] = useState(false);
-
-  const handleMouseEnter = () => {
-    setCardHover(true);
-  };
-
-  const handleMouseLeave = () => {
-    setCardHover(false);
-  };
-
   return (
-    <Card
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {cardHover && <OButton variant="danger" onClick={() => onDelete(recipe)}>Delete</OButton>}
+    <SCard>
+      <OButton variant="danger" size="sm" onClick={() => onDelete(recipe)}>
+        Delete
+      </OButton>
       <Card.Img variant="top" src={recipe.image} />
       <Card.Body>
         <SCardTitle>{recipe.title}</SCardTitle>
@@ -69,16 +79,13 @@ const SavedCard = ({ recipe, onDelete }) => {
               index ? `, ${ingredient.name}` : `${ingredient.name}`
             )}
         </SCardText>
-        <Button
-          style={{ marginTop: "10px" }}
-          size="sm"
-          block
-          href={recipe.sourceUrl}
-        >
+      </Card.Body>
+      <div style={{ marginTop: "auto", marginBottom: 0, padding: "1rem" }}>
+        <Button size="sm" block href={recipe.sourceUrl}>
           See recipe
         </Button>
-      </Card.Body>
-    </Card>
+      </div>
+    </SCard>
   );
 };
 

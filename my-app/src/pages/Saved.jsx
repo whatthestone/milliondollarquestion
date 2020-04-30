@@ -101,7 +101,7 @@ const Saved = () => {
     >
       <SHeader>Saved Recipes</SHeader>
       {deletedRecipes && (
-        <span>
+        <span style={{ textAlign: "center" }}>
           Item Deleted. <SUndo onClick={handleUndo}>Undo</SUndo>
         </span>
       )}

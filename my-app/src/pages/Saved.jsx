@@ -11,6 +11,12 @@ const media = mediaHelper({
   xl: 1200,
 });
 
+const SUndo = styled.span`
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+`
+
 const SCardColumns = styled(CardColumns)`
   padding-top: 50px;
 
@@ -73,7 +79,7 @@ const Saved = () => {
   return (
     <Container>
       <SHeader>Saved Recipes</SHeader>
-      {deletedRecipes && <Button onClick={handleUndo}>Undo</Button>}
+      {deletedRecipes && <span>Item Deleted. <SUndo onClick={handleUndo}>Undo</SUndo></span>}
       <SCardColumns>
         {savedRecipes &&
           savedRecipes.map((recipe, key) => (

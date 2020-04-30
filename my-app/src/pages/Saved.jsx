@@ -5,8 +5,6 @@ import {
   Container,
   Card,
   CardColumns,
-  ListGroup,
-  ListGroupItem,
   Button
 } from "react-bootstrap";
 
@@ -75,7 +73,7 @@ const Subheader = styled.div`
   }
 `
 
-const Saved = ({}) => {
+const Saved = () => {
   const [savedRecipes] = useState(
     JSON.parse(localStorage.getItem("savedRecipes"))
   );

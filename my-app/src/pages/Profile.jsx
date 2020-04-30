@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Button, ListGroup, Image, Nav, Tab, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  ListGroup,
+  Image,
+  Nav,
+  Tab,
+  Row,
+  Col,
+  Badge,
+} from "react-bootstrap";
 import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
 import moment from "moment";
@@ -16,107 +25,213 @@ const StyledButton = styled(Button)`
   margin-left: 1rem;
 `;
 
+const StyledCol = styled(Col)`
+  @media only screen and (max-width: 575px) {
+    margin-top: 1rem;
+  }
+`;
+
+const StyledCatPill = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+  margin: 0.2rem;
+  background-color: ${(props) => props.categories[props.c]};
+  border-radius: 0.5rem;
+  transition: transform 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const StyledBadge = styled(Badge)`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  top: -0.4rem;
+  right: -0.4rem;
+  transform: ${(props) => (props.c === props.cat ? "scale(1)" : "scale(0)")};
+  transition: transform 0.2s;
+`;
+
 export default function Profile() {
   const [pantry, setPantry] = useState(
     JSON.parse(localStorage.getItem("pantry")) || [
-      { name: "rice", expiry: "1587513600", location: "dry pantry" },
-      { name: "egg", expiry: "1588204800", location: "dry pantry" },
-      { name: "ham", expiry: "1588377600", location: "fridge" },
-      { name: "ice cream", expiry: "1588742721", location: "freezer" },
-      { name: "cheese", expiry: "1588742721", location: "fridge" },
-      { name: "bacon", expiry: "1588742721", location: "fridge" },
-      { name: "celery", expiry: "1588742721", location: "fridge" },
-      { name: "carrots", expiry: "1588118400", location: "fridge" },
+      {
+        name: "rice",
+        expiry: "1587513600",
+        location: "dry pantry",
+        cat: "grains",
+      },
+      {
+        name: "egg",
+        expiry: "1588204800",
+        location: "dry pantry",
+        cat: "dairy & soy",
+      },
+      { name: "ham", expiry: "1588377600", location: "fridge", cat: "meat" },
+      {
+        name: "ice cream",
+        expiry: "1588742721",
+        location: "freezer",
+        cat: "frozen",
+      },
+      {
+        name: "cheese",
+        expiry: "1588742721",
+        location: "fridge",
+        cat: "dairy & soy",
+      },
+      { name: "bacon", expiry: "1588742721", location: "fridge", cat: "meat" },
+      {
+        name: "celery",
+        expiry: "1588742721",
+        location: "fridge",
+        cat: "vegetables",
+      },
+      {
+        name: "carrots",
+        expiry: "1588118400",
+        location: "fridge",
+        cat: "vegetables",
+      },
     ]
   );
+
+  const categories = {
+    all: "#3f72af",
+    fruits: "#ff6f3c",
+    vegetables: "#1fab89",
+    meat: "#e84a5f",
+    "dairy & soy": "#52616b",
+    bread: "#d4a5a5",
+    grains: "#a2d5f2",
+    "sauce & condiments": "#b83b5e",
+    frozen: "#6a2c70",
+    other: "#fcbad3",
+  };
+
   const [showEdit, setShowEdit] = useState(false);
   const [showdelete, setShowdelete] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [cat, setCat] = useState("all");
 
   useEffect(() => {
     localStorage.setItem("pantry", JSON.stringify(pantry));
   }, [pantry]);
 
-  const handleAddItem = ({ itemName, expiry, location }) => {
-    const newPantry = [...pantry, { name: itemName, expiry, location }];
+  const handleAddItem = ({ itemName, expiry, location, cat }) => {
+    const newPantry = [...pantry, { name: itemName, expiry, location, cat }];
     setPantry(newPantry);
   };
 
-  //List or card? TODO: Not sure why ellipsis doesnt appear when title overflow.
+  const filterPantry = pantry.filter((item) =>
+    filter === "all" && cat === "all"
+      ? item
+      : filter === "all"
+      ? cat === item.cat
+      : cat === "all"
+      ? filter === item.location
+      : (filter === item.location) & (cat === item.cat)
+  );
+
+  //filter pantry list based on location
   const pantryList = (
     <ListGroup>
-      {pantry
-        .filter((item) => (filter === "all" ? item : filter === item.location))
-        .map((item, key) => (
-          <StyledItem key={key}>
-            <div style={{ display: "flex" }}>
-              <Image
-                style={{ height: "3em", width: "3rem" }}
-                src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name.toLowerCase()}.jpg`}
-              />
-              <div
+      {filterPantry.map((item, key) => (
+        <StyledItem key={key}>
+          <div style={{ display: "flex" }}>
+            <Image
+              style={{ height: "3em", width: "3rem" }}
+              src={`https://spoonacular.com/cdn/ingredients_100x100/${item.name.toLowerCase()}.jpg`}
+            />
+            <div
+              style={{
+                display: "flex",
+                marginLeft: ".5rem",
+                marginRight: ".5rem",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+              }}
+            >
+              <span style={{ fontWeight: "bold" }}>{item.name}</span>
+              <span
                 style={{
-                  display: "flex",
-                  marginLeft: ".5rem",
-                  marginRight: ".5rem",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
+                  color: moment.unix(item.expiry).isBefore()
+                    ? "red"
+                    : moment.unix(item.expiry).isBefore(moment().add(2, "days"))
+                    ? "#f90"
+                    : "grey",
+                  fontWeight: "600",
                 }}
               >
-                <span style={{ fontWeight: "bold" }}>{item.name}</span>
-                <span
-                  style={{
-                    color: moment.unix(item.expiry).isBefore()
-                      ? "red"
-                      : moment
-                          .unix(item.expiry)
-                          .isBefore(moment().add(2, "days"))
-                      ? "#f90"
-                      : "green",
-                    fontWeight: "600",
-                  }}
-                >
-                  {moment.unix(item.expiry).calendar()}
-                </span>
-              </div>
+                {moment.unix(item.expiry).calendar()}
+              </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <span
                 style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  flexDirection: "column",
+                  color: "grey",
+                  fontWeight: "600",
+                  textAlign: "right",
                 }}
               >
-                <span
-                  style={{
-                    color: "grey",
-                    fontWeight: "600",
-                    textAlign: "right",
-                  }}
-                >
-                  {item.location}
-                </span>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  {showdelete ? (
-                    <Button
-                      variant="danger"
-                      onClick={() =>
-                        setPantry([
-                          ...pantry.filter((i) => i.name !== item.name),
-                        ])
-                      }
-                    >
-                      Remove
-                    </Button>
-                  ) : null}
-                </div>
+                {item.location}
+              </span>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {showdelete ? (
+                  <Button
+                    variant="danger"
+                    onClick={() =>
+                      setPantry([...pantry.filter((i) => i.name !== item.name)])
+                    }
+                  >
+                    Remove
+                  </Button>
+                ) : null}
               </div>
             </div>
-          </StyledItem>
-        ))}
+          </div>
+        </StyledItem>
+      ))}
+      {filterPantry.length === 0 ? (
+        <div>
+          <h4 style={{ color: "grey" }}>No items here</h4>
+        </div>
+      ) : null}
     </ListGroup>
+  );
+
+  //Only show categories of current filtered pantry list
+  const catList = [...new Set(filterPantry.map((item) => item.cat))].map(
+    (c) => (
+      <StyledCatPill
+        c={c}
+        categories={categories}
+        onClick={() => (cat !== c ? setCat(c) : setCat("all"))}
+      >
+        <StyledBadge c={c} cat={cat} variant="danger">
+          X
+        </StyledBadge>
+        <span style={{ color: "white" }}>{c}</span>
+      </StyledCatPill>
+    )
   );
 
   return (
@@ -138,12 +253,14 @@ export default function Profile() {
         <h2>Your pantry</h2>
         <div style={{ display: "flex", justifyContent: "flex-between" }}>
           <StyledButton
+            size="sm"
             variant="outline-success"
             onClick={() => setShowEdit(!showEdit)}
           >
             Add
           </StyledButton>
           <StyledButton
+            size="sm"
             variant="outline-danger"
             onClick={() => setShowdelete(!showdelete)}
           >
@@ -183,14 +300,23 @@ export default function Profile() {
               </Nav.Item>
             </Nav>
           </Col>
-          <Col sm={9}>
+          <StyledCol sm={9}>
+            <div
+              style={{
+                display: "flex",
+                marginBottom: "1rem",
+                flexWrap: "wrap",
+              }}
+            >
+              {catList}
+            </div>
             <Tab.Content>
               <Tab.Pane eventKey="all">{pantryList}</Tab.Pane>
               <Tab.Pane eventKey="fridge">{pantryList}</Tab.Pane>
               <Tab.Pane eventKey="freeze">{pantryList}</Tab.Pane>
               <Tab.Pane eventKey="dry pantry">{pantryList}</Tab.Pane>
             </Tab.Content>
-          </Col>
+          </StyledCol>
         </Row>
       </Tab.Container>
       <PantryAddModal

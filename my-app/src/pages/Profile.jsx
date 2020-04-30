@@ -63,8 +63,8 @@ export default function Profile() {
                   justifyContent: "flex-start",
                 }}
               >
-                <a style={{ fontWeight: "bold" }}>{item.name}</a>
-                <a
+                <span style={{ fontWeight: "bold" }}>{item.name}</span>
+                <span
                   style={{
                     color: moment.unix(item.expiry).isBefore()
                       ? "red"
@@ -77,7 +77,7 @@ export default function Profile() {
                   }}
                 >
                   {moment.unix(item.expiry).calendar()}
-                </a>
+                </span>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
@@ -89,7 +89,7 @@ export default function Profile() {
                   flexDirection: "column",
                 }}
               >
-                <a
+                <span
                   style={{
                     color: "grey",
                     fontWeight: "600",
@@ -97,7 +97,7 @@ export default function Profile() {
                   }}
                 >
                   {item.location}
-                </a>
+                </span>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   {showdelete ? (
                     <Button

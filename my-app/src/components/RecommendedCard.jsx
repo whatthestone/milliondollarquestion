@@ -13,7 +13,7 @@ const SCard = styled(Card)`
 
 const SCardTitle = styled.h4`
   font-weight: 700;
-  padding-top: 0.5rem;
+  padding-top: 0.7rem;
 `;
 
 const Link = styled.a`
@@ -55,14 +55,32 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave, onUnsave }) => {
     setRecipeSavedState(isSavedRecipe);
   }, [isSavedRecipe]);
 
+  const extractHostname = (url) => {
+    var hostname;
+    //find & remove protocol (http, ftp, etc.) and get hostname
+
+    if (url.indexOf("//") > -1) {
+      hostname = url.split("/")[2];
+    } else {
+      hostname = url.split("/")[0];
+    }
+
+    //find & remove port number
+    hostname = hostname.split(":")[0];
+    //find & remove "?"
+    hostname = hostname.split("?")[0];
+
+    return hostname;
+  };
+
   return (
     <SCard>
       <StyledCardImg variant="top" src={recipe.image} />
       <StyledCardBody>
         <SCardTitle>{recipe.title}</SCardTitle>
         <span>
-          <Link href="www.kitchen.com/recipe" target="_blank">
-            www.kitchen.com
+          <Link href={recipe.sourceUrl} target="_blank">
+            {extractHostname(recipe.sourceUrl)}
           </Link>
           {recipeSavedState ? (
             <SRButton

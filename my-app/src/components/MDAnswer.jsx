@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Row, Container, Button } from "react-bootstrap";
 import RecommendedCard from "../components/RecommendedCard";
@@ -32,8 +32,10 @@ const StyledSRecipeBox = styled.div`
 
 const MDAnswer = ({
   recipe,
+  isSavedRecipe,
   onEdit,
   onSave,
+  onUnsave,
   onAnother,
   allRecipes,
   changeCard,
@@ -54,13 +56,12 @@ const MDAnswer = ({
         <Header>The Million Dollar Answer</Header>
         <SubHeader>This is what we suggest: </SubHeader>
       </div>
-      <RecommendedCard recipe={recipe} />
+      <RecommendedCard recipe={recipe} isSavedRecipe={isSavedRecipe} onSave={onSave} onUnsave={onUnsave}/>
       <Row>
         <OptionSelectionWrapper>
           <SButton variant="outline-primary" onClick={onEdit}>
             Edit
           </SButton>
-          <SButton onClick={onSave}>SAVE</SButton>
           <SButton variant="outline-primary" onClick={onAnother}>
             Another
           </SButton>

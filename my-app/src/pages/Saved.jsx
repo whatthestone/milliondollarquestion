@@ -15,28 +15,41 @@ const SUndo = styled.span`
   color: #007bff;
   text-decoration: underline;
   cursor: pointer;
-`
+`;
 
-const SCardColumns = styled(CardColumns)`
-  padding-top: 50px;
+const SCardColumns = styled.div`
+  display: flex;
 
-  ${media.only("sm")} {
-    column-count: 2;
-    font-size: 12px;
+  @media only screen and (max-width: 992px) {
+    justify-content: center;
   }
 
-  ${media.only("md")} {
-    column-count: 3;
-  }
-
-  ${media.only("lg")} {
-    column-count: 4;
-  }
-
-  ${media.only("xl")} {
-    column-count: 5;
+  @media only screen and (max-width: 719px) {
+    flex-wrap: wrap;
   }
 `;
+
+// const SCardColumns = styled(CardColumns)`
+//   padding-top: 50px;
+//   height: 100%;
+
+//   ${media.only("sm")} {
+//     column-count: 2;
+//     font-size: 12px;
+//   }
+
+//   ${media.only("md")} {
+//     column-count: 3;
+//   }
+
+//   ${media.only("lg")} {
+//     column-count: 4;
+//   }
+
+//   ${media.only("xl")} {
+//     column-count: 5;
+//   }
+// `;
 
 const SHeader = styled.h3`
   padding-top: 30px;
@@ -77,16 +90,28 @@ const Saved = () => {
   };
 
   return (
-    <Container>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        width: "100vw",
+        margin: 0,
+      }}
+    >
       <SHeader>Saved Recipes</SHeader>
-      {deletedRecipes && <span>Item Deleted. <SUndo onClick={handleUndo}>Undo</SUndo></span>}
+      {deletedRecipes && (
+        <span>
+          Item Deleted. <SUndo onClick={handleUndo}>Undo</SUndo>
+        </span>
+      )}
       <SCardColumns>
         {savedRecipes &&
           savedRecipes.map((recipe, key) => (
             <SavedCard key={key} recipe={recipe} onDelete={handleDelete} />
           ))}
       </SCardColumns>
-    </Container>
+    </div>
   );
 };
 

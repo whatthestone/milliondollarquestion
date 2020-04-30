@@ -85,7 +85,7 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave, onUnsave }) => {
           {recipeSavedState ? (
             <SRButton
               size="sm"
-              variant="outline-info"
+              variant="info"
               onClick={() => {
                 onUnsave();
                 setRecipeSavedState(false);
@@ -96,7 +96,7 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave, onUnsave }) => {
           ) : (
             <SRButton
               size="sm"
-              variant="info"
+              variant="outline-info"
               onClick={() => {
                 onSave();
                 setRecipeSavedState(true);

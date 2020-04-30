@@ -8,16 +8,18 @@ const StyledCard = styled(Card)`
   margin: 1rem;
   cursor: pointer;
   transition: transform 0.3s;
-
-  &:hover {
-    transform: scale(1.03);
-  }
+  overflow: hidden;
 `;
 
 const StyledCardImg = styled(Card.Img)`
   width: 100%;
   height: 100%;
   filter: brightness(50%);
+  transition: transform 0.3s ease-out;
+
+  ${StyledCard}:hover & {
+    transform: scale(1.2);
+  }
 `;
 
 const SimiliarRecipeCard = ({ recipe, changeCard }) => {

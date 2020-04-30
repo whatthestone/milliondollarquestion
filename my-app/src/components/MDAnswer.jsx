@@ -56,7 +56,12 @@ const MDAnswer = ({
         <Header>The Million Dollar Answer</Header>
         <SubHeader>This is what we suggest: </SubHeader>
       </div>
-      <RecommendedCard recipe={recipe} isSavedRecipe={isSavedRecipe} onSave={onSave} onUnsave={onUnsave}/>
+      <RecommendedCard
+        recipe={recipe}
+        isSavedRecipe={isSavedRecipe}
+        onSave={onSave}
+        onUnsave={onUnsave}
+      />
       <Row>
         <OptionSelectionWrapper>
           <SButton variant="outline-primary" onClick={onEdit}>

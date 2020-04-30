@@ -6,6 +6,7 @@ function PantryAddModal(props) {
   const [itemName, setItemName] = useState("");
   const [expiry, setExpiry] = useState("1 week");
   const [location, setLocation] = useState("fridge");
+  const [cat, setCat] = useState("fruits");
   const [validated, setValidated] = useState(false);
 
   const submit = (e) => {
@@ -36,11 +37,13 @@ function PantryAddModal(props) {
         default:
           break;
       }
-      props.handleAddItem({ itemName, expiry: expiryTimestamp, location });
+      props.handleAddItem({ itemName, expiry: expiryTimestamp, location, cat });
     }
     props.onHide();
+    //reset everything
     setItemName("");
     setLocation("fridge");
+    setCat("fruits");
     setExpiry("1 week");
   };
 
@@ -70,6 +73,24 @@ function PantryAddModal(props) {
             <Form.Control.Feedback type="invalid">
               Please provide a valid name.
             </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group controlId="formcat">
+            <Form.Label>Category</Form.Label>
+            <Form.Control
+              as="select"
+              value={cat}
+              onChange={(e) => setCat(e.target.value)}
+            >
+              <option>fruits</option>
+              <option>vegetables</option>
+              <option>meat</option>
+              <option>dairy & soy</option>
+              <option>bread</option>
+              <option>grains</option>
+              <option>sauce & condiments</option>
+              <option>frozen</option>
+              <option>other</option>
+            </Form.Control>
           </Form.Group>
 
           <Form.Group controlId="formlocation">

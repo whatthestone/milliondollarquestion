@@ -48,7 +48,7 @@ const StyledCardBody = styled(Card.Body)`
   justify-content: center;
 `;
 
-const RecommendedCard = ({ recipe, isSavedRecipe, onSave }) => {
+const RecommendedCard = ({ recipe, isSavedRecipe, onSave, onUnsave }) => {
   const [recipeSavedState, setRecipeSavedState] = useState(isSavedRecipe);
 
   useEffect(() => {
@@ -65,7 +65,14 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave }) => {
             www.kitchen.com
           </Link>
           {recipeSavedState ? (
-            <SRButton size="sm" variant="outline-info" disabled>
+            <SRButton
+              size="sm"
+              variant="outline-info"
+              onClick={() => {
+                onUnsave();
+                setRecipeSavedState(false);
+              }}
+            >
               Saved
             </SRButton>
           ) : (

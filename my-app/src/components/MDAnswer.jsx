@@ -35,6 +35,7 @@ const MDAnswer = ({
   isSavedRecipe,
   onEdit,
   onSave,
+  onUnsave,
   onAnother,
   allRecipes,
   changeCard,
@@ -55,7 +56,7 @@ const MDAnswer = ({
         <Header>The Million Dollar Answer</Header>
         <SubHeader>This is what we suggest: </SubHeader>
       </div>
-      <RecommendedCard recipe={recipe} isSavedRecipe={isSavedRecipe} onSave={onSave}/>
+      <RecommendedCard recipe={recipe} isSavedRecipe={isSavedRecipe} onSave={onSave} onUnsave={onUnsave}/>
       <Row>
         <OptionSelectionWrapper>
           <SButton variant="outline-primary" onClick={onEdit}>

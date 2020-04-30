@@ -89,14 +89,25 @@ const Main = ({ url }) => {
     //if localstorage has saved recipes, add it in and set state, else add it in
     if (localStorage.getItem("savedRecipes")) {
       const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
-      console.log(savedRecipes);
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
     } else {
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
     }
-    console.log(savedRecipes);
+  };
+
+  const handleUnsave = () => {
+    console.log(recipe);
+    let savedRecipes = [];
+    if (localStorage.getItem("savedRecipes")) {
+      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
+      let filteredRecipes = savedRecipes.filter(
+        (item) => item.id !== recipe.id
+      );
+      console.log(filteredRecipes);
+      localStorage.setItem("savedRecipes", JSON.stringify(filteredRecipes));
+    }
   };
 
   const isSavedRecipe = localStorage.getItem("savedRecipes") ? JSON.parse(localStorage.getItem("savedRecipes")).filter(item => item.id === recipe.id).length : 0
@@ -129,6 +140,7 @@ const Main = ({ url }) => {
             isSavedRecipe={isSavedRecipe}
             onEdit={handleEdit}
             onSave={handleSave}
+            onUnsave={handleUnsave}
             onAnother={handleAnother}
             allRecipes={data}
             changeCard={handleChangecard}

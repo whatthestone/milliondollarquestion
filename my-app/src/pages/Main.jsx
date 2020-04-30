@@ -15,9 +15,7 @@ const Main = ({ url }) => {
   const [recipe, setRecipe] = useState(
     JSON.parse(localStorage.getItem("recipe")) || null
   );
-  const [savedRecipes, setSavedRecipes] = useState(
-    JSON.parse(localStorage.getItem("savedRecipes")) || null
-  );
+  
   const [recipeId, setRecipeId] = useState(null);
   const [preference, setPreference] = useState({
     mealType: null,
@@ -94,11 +92,9 @@ const Main = ({ url }) => {
       console.log(savedRecipes);
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-      setSavedRecipes(savedRecipes);
     } else {
       savedRecipes.push(recipe);
       localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-      setSavedRecipes(savedRecipes.push(recipe));
     }
     console.log(savedRecipes);
   };

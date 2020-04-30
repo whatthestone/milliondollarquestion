@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Card, Button } from "react-bootstrap";
 import Recipe from "./Recipe";
@@ -57,12 +57,30 @@ const StyledCardBody = styled(Card.Body)`
   justify-content: center;
 `;
 
-const RecommendedCard = ({ recipe }) => {
+const RecommendedCard = ({ recipe, isSavedRecipe, onSave }) => {
+  const [recipeSavedState, setRecipeSavedState] = useState(isSavedRecipe);
+
+  useEffect(() => {
+    setRecipeSavedState(isSavedRecipe);
+  }, [isSavedRecipe]);
+
   return (
     <SCard>
       <StyledCardImg variant="top" src={recipe.image} />
       <StyledCardBody>
         <SCardTitle>{recipe.title}</SCardTitle>
+        {recipeSavedState ? (
+          <Button disabled>Saved</Button>
+        ) : (
+          <Button
+            onClick={() => {
+              onSave();
+              setRecipeSavedState(true);
+            }}
+          >
+            Save
+          </Button>
+        )}
         <Link href="www.kitchen.com/recipe" target="_blank">
           www.kitchen.com
         </Link>

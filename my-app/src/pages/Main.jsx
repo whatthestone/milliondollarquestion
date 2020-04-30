@@ -10,12 +10,12 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 const Main = ({ url }) => {
   //cache data to show similiar recipes
   const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("allRecipes")) || null
+    JSON.parse(localStorage.getItem("allRecipes")) || []
   );
   const [recipe, setRecipe] = useState(
-    JSON.parse(localStorage.getItem("recipe")) || null
+    JSON.parse(localStorage.getItem("recipe")) || []
   );
-  
+
   const [recipeId, setRecipeId] = useState(null);
   const [preference, setPreference] = useState({
     mealType: null,
@@ -99,6 +99,8 @@ const Main = ({ url }) => {
     console.log(savedRecipes);
   };
 
+  const isSavedRecipe = localStorage.getItem("savedRecipes") ? JSON.parse(localStorage.getItem("savedRecipes")).filter(item => item.id === recipe.id).length : 0
+
   const handleAnother = () => {
     //randomise recipe onclick another
     if (data) {
@@ -124,10 +126,11 @@ const Main = ({ url }) => {
         <Route path={`${url}/answer`}>
           <MDAnswer
             recipe={recipe}
-            allRecipes={data}
+            isSavedRecipe={isSavedRecipe}
             onEdit={handleEdit}
             onSave={handleSave}
             onAnother={handleAnother}
+            allRecipes={data}
             changeCard={handleChangecard}
           />
         </Route>

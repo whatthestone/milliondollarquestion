@@ -25,6 +25,14 @@ const StyledButton = styled(Button)`
   margin-left: 1rem;
 `;
 
+const StyledRemoveButton = styled(Button)`
+  transform: translateX(0.5rem);
+  transition: opacity 0.2s, transform 0.2s;
+  opacity: ${(props) => (props.showdelete ? 1 : 0)};
+  transform: ${(props) =>
+    props.showdelete ? "translateX(0)" : "translateX(.5rem)"};
+`;
+
 const StyledCol = styled(Col)`
   @media only screen and (max-width: 575px) {
     margin-top: 1rem;
@@ -180,8 +188,8 @@ export default function Profile() {
             <div
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
+                justifyContent: "center",
+                alignItems: "flex-end",
                 flexDirection: "column",
               }}
             >
@@ -195,16 +203,16 @@ export default function Profile() {
                 {item.location}
               </span>
               <div style={{ display: "flex", justifyContent: "center" }}>
-                {showdelete ? (
-                  <Button
-                    variant="danger"
-                    onClick={() =>
-                      setPantry([...pantry.filter((i) => i.name !== item.name)])
-                    }
-                  >
-                    Remove
-                  </Button>
-                ) : null}
+                <StyledRemoveButton
+                  size="sm"
+                  variant="danger"
+                  showdelete={showdelete}
+                  onClick={() =>
+                    setPantry([...pantry.filter((i) => i.name !== item.name)])
+                  }
+                >
+                  Remove
+                </StyledRemoveButton>
               </div>
             </div>
           </div>

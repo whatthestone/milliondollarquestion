@@ -19,13 +19,10 @@ const SUndo = styled.span`
 
 const SCardColumns = styled.div`
   display: flex;
+  flex-wrap: wrap;
 
   @media only screen and (max-width: 992px) {
     justify-content: center;
-  }
-
-  @media only screen and (max-width: 719px) {
-    flex-wrap: wrap;
   }
 `;
 

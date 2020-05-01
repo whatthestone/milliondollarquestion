@@ -28,6 +28,7 @@ const SUndo = styled.span`
 
 const SCardColumns = styled(CardColumns)`
   padding-top: 50px;
+  height: 100%;
 
   ${media.only("sm")} {
     column-count: 2;
@@ -86,7 +87,7 @@ const Saved = () => {
   };
 
   return (
-    <Container>
+    <Container style={{ height: "200vh" }}>
       <SHeader>Saved Recipes</SHeader>
       {deletedRecipes && (
         <span style={{ textAlign: "center" }}>

@@ -28,6 +28,7 @@ const StyledButton = styled(Button)`
 const StyledRemoveButton = styled(Button)`
   transform: translateX(0.5rem);
   transition: opacity 0.2s, transform 0.2s;
+  visibility: ${(props) => (props.showdelete ? "visible" : "hidden")};
   opacity: ${(props) => (props.showdelete ? 1 : 0)};
   transform: ${(props) =>
     props.showdelete ? "translateX(0)" : "translateX(.5rem)"};

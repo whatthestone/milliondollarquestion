@@ -17,36 +17,35 @@ const SUndo = styled.span`
   cursor: pointer;
 `;
 
-const SCardColumns = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+// const SCardColumns = styled.div`
+//   display: flex;
+//   flex-wrap: wrap;
 
-  @media only screen and (max-width: 992px) {
-    justify-content: center;
-  }
-`;
-
-// const SCardColumns = styled(CardColumns)`
-//   padding-top: 50px;
-//   height: 100%;
-
-//   ${media.only("sm")} {
-//     column-count: 2;
-//     font-size: 12px;
-//   }
-
-//   ${media.only("md")} {
-//     column-count: 3;
-//   }
-
-//   ${media.only("lg")} {
-//     column-count: 4;
-//   }
-
-//   ${media.only("xl")} {
-//     column-count: 5;
+//   @media only screen and (max-width: 992px) {
+//     justify-content: center;
 //   }
 // `;
+
+const SCardColumns = styled(CardColumns)`
+  padding-top: 50px;
+
+  ${media.only("sm")} {
+    column-count: 2;
+    font-size: 12px;
+  }
+
+  ${media.only("md")} {
+    column-count: 3;
+  }
+
+  ${media.only("lg")} {
+    column-count: 4;
+  }
+
+  ${media.only("xl")} {
+    column-count: 5;
+  }
+`;
 
 const SHeader = styled.h3`
   padding-top: 30px;
@@ -87,15 +86,7 @@ const Saved = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        width: "100vw",
-        margin: 0,
-      }}
-    >
+    <Container>
       <SHeader>Saved Recipes</SHeader>
       {deletedRecipes && (
         <span style={{ textAlign: "center" }}>
@@ -108,7 +99,7 @@ const Saved = () => {
             <SavedCard key={key} recipe={recipe} onDelete={handleDelete} />
           ))}
       </SCardColumns>
-    </div>
+    </Container>
   );
 };
 

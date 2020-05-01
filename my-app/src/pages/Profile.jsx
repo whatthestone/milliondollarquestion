@@ -13,6 +13,17 @@ import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
 import moment from "moment";
 
+moment.updateLocale("en", {
+  calendar: {
+    lastDay: "[Yesterday]",
+    sameDay: "[Today]",
+    nextDay: "[Tomorrow]",
+    lastWeek: "[Last] dddd",
+    nextWeek: "[Next] dddd",
+    sameElse: "L",
+  },
+});
+
 const StyledItem = styled(ListGroup.Item)`
   display: flex;
   flexdirection: row;
@@ -26,12 +37,11 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledRemoveButton = styled(Button)`
-  transform: translateX(0.5rem);
-  transition: opacity 0.2s, transform 0.2s;
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
   visibility: ${(props) => (props.showdelete ? "visible" : "hidden")};
   opacity: ${(props) => (props.showdelete ? 1 : 0)};
   transform: ${(props) =>
-    props.showdelete ? "translateX(0)" : "translateX(.5rem)"};
+    props.showdelete ? "translateX(0)" : "translateX(-.2rem)"};
 `;
 
 const StyledCol = styled(Col)`

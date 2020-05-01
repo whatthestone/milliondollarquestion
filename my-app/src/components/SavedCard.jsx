@@ -14,9 +14,7 @@ const media = mediaHelper({
 const SCard = styled(Card)`
   display: flex;
   justify-content: center;
-  width: 13rem;
   height: auto;
-  margin: 1rem;
 
   @media only screen and (max-width: 479px) {
     width: 100%;
@@ -54,10 +52,12 @@ const OButton = styled(Button)`
   left: 5px;
   z-index: 10;
   opacity: 0;
+  visibility: hidden;
   transform: translateY(-0.5rem);
   transition: opacity 0.5s, transform 0.5s;
 
   ${SCard}:hover & {
+    visibility: visible;
     opacity: 1;
     transform: translateY(0);
   }

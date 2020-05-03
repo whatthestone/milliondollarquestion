@@ -9,6 +9,7 @@
     "moment": "^2.24.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-infinite-scroll-component": "^5.0.4",
     "react-scripts": "3.4.1",
     "styled-media-helper": "^2.0.2"
   },

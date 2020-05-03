@@ -26,6 +26,39 @@ const Main = ({ url }) => {
   const [pantry] = useState(JSON.parse(localStorage.getItem("pantry")) || []);
   const [showAns, setShowAns] = useState(false);
 
+  //for infinite scroll
+  const [totalResultLength, setTotalResultLength] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
+
+  //Does all the fetch recipes.
+  const fetchRecipes = (offset = 0) => {
+    const { mealType, maxReadyTime, cuisine } = preference;
+    return fetch(
+      `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&offset=${offset}&apiKey=${process.env.REACT_APP_APIKEY}`
+    ).then((res) => {
+      return res.status > 300 //use fakeresults if no api key too
+        ? fakeResults
+        : res.json();
+    });
+  };
+
+  //fetch more recipes for infinite scroll
+  const fetchMoreData = () => {
+    console.log(data.length, totalResultLength);
+    if (data.length >= totalResultLength) {
+      setHasMore(false);
+      return;
+    }
+    const newOffset = data.length;
+    setOffset(newOffset);
+    fetchRecipes(newOffset).then((json) => {
+      const newData = json.results;
+      console.log(json);
+      setData([...data, ...newData]);
+    });
+  };
+
   useEffect(() => {
     const { mealType, maxReadyTime, cuisine } = preference;
     //Only fetch if all not null
@@ -33,29 +66,23 @@ const Main = ({ url }) => {
       //string all the ingredients seperated by comma
       //TODO check why api returning zero results if stringPantry have many items. I think it only returns recipe that use all the ingredients under "includeIngredients"
       // const stringPantry = pantry.map((item) => `${item.name}`).join(",");
-      fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&apiKey=${process.env.REACT_APP_APIKEY}`
-      )
-        .then((res) => {
-          return res.status > 300 //use fakeresults if no api key too
-            ? fakeResults
-            : res.json();
-        })
-        .then((json) => {
-          let newData = {};
-          newData = json.results || fakeResults.results;
+      fetchRecipes(0).then((json) => {
+        console.log(json);
+        setTotalResultLength(json.totalResults);
+        let newData = {};
+        newData = json.results || fakeResults.results;
 
-          if (newData?.length > 0) {
-            //set state of data
-            setData(newData);
-            localStorage.setItem("allRecipes", JSON.stringify(newData));
+        if (newData?.length > 0) {
+          //set state of data
+          setData(newData);
+          localStorage.setItem("allRecipes", JSON.stringify(newData));
 
-            const randomRecipe =
-              newData[Math.floor(Math.random() * newData.length)];
-            setRecipeId(randomRecipe.id);
-          }
-          //TODO: Ask question again if no result.
-        });
+          const randomRecipe =
+            newData[Math.floor(Math.random() * newData.length)];
+          setRecipeId(randomRecipe.id);
+        }
+        //TODO: Ask question again if no result.
+      });
     }
   }, [preference]);
 
@@ -110,7 +137,11 @@ const Main = ({ url }) => {
     }
   };
 
-  const isSavedRecipe = localStorage.getItem("savedRecipes") ? JSON.parse(localStorage.getItem("savedRecipes")).filter(item => item.id === recipe.id).length : 0
+  const isSavedRecipe = localStorage.getItem("savedRecipes")
+    ? JSON.parse(localStorage.getItem("savedRecipes")).filter(
+        (item) => item.id === recipe.id
+      ).length
+    : 0;
 
   const handleAnother = () => {
     //randomise recipe onclick another
@@ -144,6 +175,8 @@ const Main = ({ url }) => {
             onAnother={handleAnother}
             allRecipes={data}
             changeCard={handleChangecard}
+            fetchMoreData={fetchMoreData}
+            hasMore={hasMore}
           />
         </Route>
 

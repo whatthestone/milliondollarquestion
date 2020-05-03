@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Row, Container, Button } from "react-bootstrap";
 import RecommendedCard from "../components/RecommendedCard";
@@ -39,12 +39,14 @@ const MDAnswer = ({
   onAnother,
   allRecipes,
   changeCard,
+  fetchMoreData,
+  hasMore,
 }) => {
   const SimiliarRecipes = allRecipes
     ? allRecipes
         .filter((r) => r.id !== recipe.id)
-        .map((r, index) => (
-          <SimiliarRecipeCard key={index} recipe={r} changeCard={changeCard} />
+        .map((r) => (
+          <SimiliarRecipeCard key={r.id} recipe={r} changeCard={changeCard} />
         ))
     : null;
 
@@ -84,6 +86,15 @@ const MDAnswer = ({
         >
           <h4>Based on your preferences, you might also like...</h4>
           {/* <p>infinite scroll</p> */}
+          {/* <InfiniteScroll
+            dataLength={allRecipes.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={<span>Loading...</span>}
+            endMessage={<span>No more recipes :(</span>}
+          >
+            <StyledSRecipeBox>{SimiliarRecipes}</StyledSRecipeBox>
+          </InfiniteScroll> */}
           <StyledSRecipeBox>{SimiliarRecipes}</StyledSRecipeBox>
         </div>
       ) : null}

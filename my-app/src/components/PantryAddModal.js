@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+<<<<<<< HEAD
+import { DatePicker } from "antd";
+import "antd/dist/antd.css";
+
+function PantryAddModal(props) {
+  const [itemName, setItemName] = useState("");
+  const [expiry, setExpiry] = useState(null);
+=======
 import moment from "moment";
 
 function PantryAddModal(props) {
   const [itemName, setItemName] = useState("");
   const [expiry, setExpiry] = useState("1 week");
+>>>>>>> 487a0d80deffdec1a03cd902dac5965b79c5e95f
   const [location, setLocation] = useState("fridge");
   const [cat, setCat] = useState("fruits");
   const [validated, setValidated] = useState(false);
@@ -14,6 +23,18 @@ function PantryAddModal(props) {
     const form = e.currentTarget;
 
     // TODO: validation not working properly
+<<<<<<< HEAD
+    if (form.checkValidity() && expiry) {
+      setValidated(true);
+      props.handleAddItem({ itemName, expiry: expiry.unix(), location, cat });
+      props.onHide();
+      //reset everything
+      setItemName("");
+      setLocation("fridge");
+      setCat("fruits");
+      setExpiry(null);
+    }
+=======
     if (form.checkValidity()) {
       setValidated(true);
       let expiryTimestamp = moment().unix();
@@ -45,6 +66,7 @@ function PantryAddModal(props) {
     setLocation("fridge");
     setCat("fruits");
     setExpiry("1 week");
+>>>>>>> 487a0d80deffdec1a03cd902dac5965b79c5e95f
   };
 
   return (
@@ -105,6 +127,18 @@ function PantryAddModal(props) {
               <option>dry pantry</option>
             </Form.Control>
           </Form.Group>
+<<<<<<< HEAD
+          <Form.Group
+            controlId="formusedby"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
+          >
+            <Form.Label>Used by</Form.Label>
+            <DatePicker onChange={(date) => setExpiry(date)} />
+=======
           <Form.Group controlId="formusedby">
             <Form.Label>Used by</Form.Label>
             <Form.Control
@@ -118,6 +152,7 @@ function PantryAddModal(props) {
               <option>1 month</option>
               <option>3 months</option>
             </Form.Control>
+>>>>>>> 487a0d80deffdec1a03cd902dac5965b79c5e95f
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit

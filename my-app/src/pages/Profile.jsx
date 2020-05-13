@@ -15,7 +15,6 @@ import moment from "moment";
 
 moment.updateLocale("en", {
   calendar: {
-<<<<<<< HEAD
     lastDay: "[Expired yesterday]",
     sameDay: "[Expiring today]",
     nextDay: "[Tomorrow]",
@@ -41,14 +40,6 @@ moment.updateLocale("en", {
         return "[Expired]";
       }
     },
-=======
-    lastDay: "[Yesterday]",
-    sameDay: "[Today]",
-    nextDay: "[Tomorrow]",
-    lastWeek: "[Last] dddd",
-    nextWeek: "[Next] dddd",
-    sameElse: "L",
->>>>>>> 487a0d80deffdec1a03cd902dac5965b79c5e95f
   },
 });
 

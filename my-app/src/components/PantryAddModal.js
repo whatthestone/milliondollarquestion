@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+<<<<<<< HEAD
 import { DatePicker } from "antd";
 import "antd/dist/antd.css";
 
 function PantryAddModal(props) {
   const [itemName, setItemName] = useState("");
   const [expiry, setExpiry] = useState(null);
+=======
+import moment from "moment";
+
+function PantryAddModal(props) {
+  const [itemName, setItemName] = useState("");
+  const [expiry, setExpiry] = useState("1 week");
+>>>>>>> fe2b59b1dfa4b242ddbe391cea9451591e177553
   const [location, setLocation] = useState("fridge");
   const [cat, setCat] = useState("fruits");
   const [validated, setValidated] = useState(false);
@@ -15,6 +23,7 @@ function PantryAddModal(props) {
     const form = e.currentTarget;
 
     // TODO: validation not working properly
+<<<<<<< HEAD
     if (form.checkValidity() && expiry) {
       setValidated(true);
       props.handleAddItem({ itemName, expiry: expiry.unix(), location, cat });
@@ -25,6 +34,39 @@ function PantryAddModal(props) {
       setCat("fruits");
       setExpiry(null);
     }
+=======
+    if (form.checkValidity()) {
+      setValidated(true);
+      let expiryTimestamp = moment().unix();
+      switch (expiry) {
+        case "1 week":
+          expiryTimestamp = moment().add(1, "week").unix();
+          break;
+        case "2 weeks":
+          expiryTimestamp = moment().add(2, "week").unix();
+          break;
+        case "3 weeks":
+          expiryTimestamp = moment().add(3, "week").unix();
+          break;
+        case "1 month":
+          expiryTimestamp = moment().add(1, "month").unix();
+          break;
+        case "3 months":
+          expiryTimestamp = moment().add(3, "month").unix();
+          break;
+
+        default:
+          break;
+      }
+      props.handleAddItem({ itemName, expiry: expiryTimestamp, location, cat });
+    }
+    props.onHide();
+    //reset everything
+    setItemName("");
+    setLocation("fridge");
+    setCat("fruits");
+    setExpiry("1 week");
+>>>>>>> fe2b59b1dfa4b242ddbe391cea9451591e177553
   };
 
   return (
@@ -85,6 +127,7 @@ function PantryAddModal(props) {
               <option>dry pantry</option>
             </Form.Control>
           </Form.Group>
+<<<<<<< HEAD
           <Form.Group
             controlId="formusedby"
             style={{
@@ -95,6 +138,21 @@ function PantryAddModal(props) {
           >
             <Form.Label>Used by</Form.Label>
             <DatePicker onChange={(date) => setExpiry(date)} />
+=======
+          <Form.Group controlId="formusedby">
+            <Form.Label>Used by</Form.Label>
+            <Form.Control
+              as="select"
+              value={expiry}
+              onChange={(e) => setExpiry(e.target.value)}
+            >
+              <option>1 week</option>
+              <option>2 weeks</option>
+              <option>3 weeks</option>
+              <option>1 month</option>
+              <option>3 months</option>
+            </Form.Control>
+>>>>>>> fe2b59b1dfa4b242ddbe391cea9451591e177553
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit

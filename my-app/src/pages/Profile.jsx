@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
+import PantryEditModal from "../components/PantryEditModal";
 import moment from "moment";
 
 moment.updateLocale("en", {
@@ -53,14 +54,6 @@ const StyledItem = styled(ListGroup.Item)`
 
 const StyledButton = styled(Button)`
   margin-left: 1rem;
-`;
-
-const StyledRemoveButton = styled(Button)`
-  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
-  visibility: ${(props) => (props.showdelete ? "visible" : "hidden")};
-  opacity: ${(props) => (props.showdelete ? 1 : 0)};
-  transform: ${(props) =>
-    props.showdelete ? "translateX(0)" : "translateX(-.2rem)"};
 `;
 
 const StyledCol = styled(Col)`
@@ -107,12 +100,14 @@ export default function Profile() {
         expiry: "1587513600",
         location: "dry pantry",
         cat: "grains",
+        key: "1587513600",
       },
       {
         name: "egg",
         expiry: "1588204800",
         location: "dry pantry",
         cat: "dairy & soy",
+        key: "1588204800",
       },
       { name: "ham", expiry: "1588377600", location: "fridge", cat: "meat" },
       {
@@ -120,25 +115,35 @@ export default function Profile() {
         expiry: "1588742721",
         location: "freezer",
         cat: "frozen",
+        key: "1588742721",
       },
       {
         name: "cheese",
-        expiry: "1588742721",
+        expiry: "1588742722",
         location: "fridge",
         cat: "dairy & soy",
+        key: "1588742722",
       },
-      { name: "bacon", expiry: "1588742721", location: "fridge", cat: "meat" },
+      {
+        name: "bacon",
+        expiry: "1588742723",
+        location: "fridge",
+        cat: "meat",
+        key: "1588742723",
+      },
       {
         name: "celery",
-        expiry: "1588742721",
+        expiry: "1588742724",
         location: "fridge",
         cat: "vegetables",
+        key: "1588742724",
       },
       {
         name: "carrots",
         expiry: "1588118400",
         location: "fridge",
         cat: "vegetables",
+        key: "1588118400",
       },
     ]
   );
@@ -156,8 +161,9 @@ export default function Profile() {
     other: "#fcbad3",
   };
 
+  const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showdelete, setShowdelete] = useState(false);
+  const [editItem, setEditItem] = useState(null); //store item expiry here (since its unique) when user click on item
   const [filter, setFilter] = useState("all");
   const [cat, setCat] = useState("all");
 
@@ -166,8 +172,30 @@ export default function Profile() {
   }, [pantry]);
 
   const handleAddItem = ({ itemName, expiry, location, cat }) => {
-    const newPantry = [...pantry, { name: itemName, expiry, location, cat }];
+    const newPantry = [
+      ...pantry,
+      { name: itemName, expiry, location, cat, key: moment().unix() },
+    ];
     setPantry(newPantry);
+  };
+
+  const handleEditItem = ({ itemName, expiry, location, cat, key }) => {
+    const newPantry = pantry.map((item) =>
+      item.key === key
+        ? { ...item, name: itemName, expiry, location, cat }
+        : item
+    );
+    setPantry(newPantry);
+  };
+
+  const deleteItemHandler = (key) => {
+    const newPantry = pantry.filter((item) => item.key !== key);
+    setPantry(newPantry);
+  };
+
+  const openEditModal = (item) => {
+    setEditItem(item);
+    setShowEdit(true);
   };
 
   const filterPantry = pantry.filter((item) =>
@@ -184,7 +212,7 @@ export default function Profile() {
   const pantryList = (
     <ListGroup>
       {filterPantry.map((item, key) => (
-        <StyledItem key={key}>
+        <StyledItem key={key} onClick={() => openEditModal(item)}>
           <div style={{ display: "flex" }}>
             <Image
               style={{ height: "3em", width: "3rem" }}
@@ -232,18 +260,18 @@ export default function Profile() {
               >
                 {item.location}
               </span>
-              <div style={{ display: "flex", justifyContent: "center" }}>
+              {/* <div style={{ display: "flex", justifyContent: "center" }}>
                 <StyledRemoveButton
                   size="sm"
                   variant="danger"
-                  showdelete={showdelete}
+                  showdelete={showEdit}
                   onClick={() =>
                     setPantry([...pantry.filter((i) => i.name !== item.name)])
                   }
                 >
                   Remove
                 </StyledRemoveButton>
-              </div>
+              </div> */}
             </div>
           </div>
         </StyledItem>
@@ -258,9 +286,10 @@ export default function Profile() {
 
   //Only show categories of current filtered pantry list
   const catList = [...new Set(filterPantry.map((item) => item.cat))].map(
-    (c) => (
+    (c, k) => (
       <StyledCatPill
         c={c}
+        key={k}
         categories={categories}
         onClick={() => (cat !== c ? setCat(c) : setCat("all"))}
       >
@@ -289,22 +318,13 @@ export default function Profile() {
         }}
       >
         <h2>Your pantry</h2>
-        <div style={{ display: "flex", justifyContent: "flex-between" }}>
-          <StyledButton
-            size="sm"
-            variant="outline-success"
-            onClick={() => setShowEdit(!showEdit)}
-          >
-            Add
-          </StyledButton>
-          <StyledButton
-            size="sm"
-            variant="outline-danger"
-            onClick={() => setShowdelete(!showdelete)}
-          >
-            Delete
-          </StyledButton>
-        </div>
+        <StyledButton
+          size="sm"
+          variant="outline-success"
+          onClick={() => setShowAdd(!showAdd)}
+        >
+          Add
+        </StyledButton>
       </div>
       <Tab.Container id="left-tabs-example" defaultActiveKey="all">
         <Row>
@@ -357,11 +377,22 @@ export default function Profile() {
           </StyledCol>
         </Row>
       </Tab.Container>
-      <PantryAddModal
-        show={showEdit}
-        onHide={() => setShowEdit(!showEdit)}
-        handleAddItem={handleAddItem}
-      />
+      {showAdd ? (
+        <PantryAddModal
+          show={showAdd}
+          onHide={() => setShowAdd(!showAdd)}
+          handleAddItem={handleAddItem}
+        />
+      ) : null}
+      {showEdit ? (
+        <PantryEditModal
+          show={showEdit}
+          onHide={() => setShowEdit(!showEdit)}
+          handleEditItem={handleEditItem}
+          deleteItemHandler={deleteItemHandler}
+          item={editItem}
+        />
+      ) : null}
     </div>
   );
 }

@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import { DatePicker } from "antd";
 import "antd/dist/antd.css";
+import moment from "moment";
 
-function PantryAddModal(props) {
-  const [itemName, setItemName] = useState("");
-  const [expiry, setExpiry] = useState(null);
-  const [location, setLocation] = useState("fridge");
-  const [cat, setCat] = useState("fruits");
+function PantryEditModal(props) {
+  const [itemName, setItemName] = useState(props.item?.name);
+  const [expiry, setExpiry] = useState(props.item?.expiry);
+  const [location, setLocation] = useState(props.item?.location);
+  const [cat, setCat] = useState(props.item?.cat);
   const [validated, setValidated] = useState(false);
 
   const submit = (e) => {
@@ -17,19 +18,20 @@ function PantryAddModal(props) {
     // TODO: validation not working properly
     if (form.checkValidity() && expiry) {
       setValidated(true);
-      props.handleAddItem({
+      props.handleEditItem({
         itemName,
-        expiry: expiry.unix(),
+        expiry: expiry,
         location,
         cat,
+        key: props.item.key,
       });
       props.onHide();
-      //reset everything
-      setItemName("");
-      setLocation("fridge");
-      setCat("fruits");
-      setExpiry(null);
     }
+  };
+
+  const deleteItem = () => {
+    props.deleteItemHandler(props.item.key);
+    props.onHide();
   };
 
   return (
@@ -41,7 +43,7 @@ function PantryAddModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Add ingredients
+          Edit ingredients
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -99,10 +101,21 @@ function PantryAddModal(props) {
             }}
           >
             <Form.Label>Used by</Form.Label>
-            <DatePicker onChange={(date) => setExpiry(date)} />
+            <DatePicker
+              onChange={(date) => (date ? setExpiry(date.unix()) : null)}
+              defaultValue={moment(moment.unix(expiry), "YYYY-MM-DD")}
+              format={"YYYY-MM-DD"}
+            />
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit
+          </Button>
+          <Button
+            variant="outline-secondary"
+            onClick={deleteItem}
+            style={{ marginLeft: "1rem" }}
+          >
+            Delete
           </Button>
         </Form>
       </Modal.Body>
@@ -110,4 +123,4 @@ function PantryAddModal(props) {
   );
 }
 
-export default PantryAddModal;
+export default PantryEditModal;

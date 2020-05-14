@@ -3,6 +3,8 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { DatePicker } from "antd";
 import "antd/dist/antd.css";
 import moment from "moment";
+import "antd/dist/antd.css";
+import Avatar from "./Avatar";
 
 function PantryEditModal(props) {
   const [itemName, setItemName] = useState(props.item?.name);
@@ -48,6 +50,10 @@ function PantryEditModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Form noValidate validated={validated} onSubmit={submit}>
+          <Form.Group controlId="formimg">
+            <Form.Label>Upload a photo</Form.Label>
+            <Avatar />
+          </Form.Group>
           <Form.Group controlId="formitemname">
             <Form.Label>Item Name</Form.Label>
             <Form.Control

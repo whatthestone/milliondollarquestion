@@ -15,12 +15,40 @@ import moment from "moment";
 
 moment.updateLocale("en", {
   calendar: {
+<<<<<<< HEAD
+    lastDay: "[Expired yesterday]",
+    sameDay: "[Expiring today]",
+    nextDay: "[Tomorrow]",
+    lastWeek: "[Expired last] dddd",
+    nextWeek: "[Next] dddd",
+    sameElse: function (now) {
+      const duration = moment.duration(this.diff(now)).days();
+      if (duration <= 0) {
+        return "[Expired]";
+      } else if (duration < 7) {
+        return "[One week]";
+      } else if (duration < 14) {
+        return "[Two weeks]";
+      } else if (duration < 21) {
+        return "[Three weeks]";
+      } else if (duration < 28) {
+        return "[One month]";
+      } else if (duration <= 60) {
+        return "[Two months]";
+      } else if (duration > 60) {
+        return "[More than two months]";
+      } else {
+        return "[Expired]";
+      }
+    },
+=======
     lastDay: "[Yesterday]",
     sameDay: "[Today]",
     nextDay: "[Tomorrow]",
     lastWeek: "[Last] dddd",
     nextWeek: "[Next] dddd",
     sameElse: "L",
+>>>>>>> fe2b59b1dfa4b242ddbe391cea9451591e177553
   },
 });
 

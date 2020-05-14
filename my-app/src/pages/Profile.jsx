@@ -260,18 +260,16 @@ export default function Profile() {
               >
                 {item.location}
               </span>
-              {/* <div style={{ display: "flex", justifyContent: "center" }}>
-                <StyledRemoveButton
-                  size="sm"
-                  variant="danger"
-                  showdelete={showEdit}
-                  onClick={() =>
-                    setPantry([...pantry.filter((i) => i.name !== item.name)])
-                  }
-                >
-                  Remove
-                </StyledRemoveButton>
-              </div> */}
+              <span
+                style={{
+                  background: categories[item.cat],
+                  padding: "0.2rem 0.5rem",
+                  borderRadius: ".5rem",
+                  color: "white",
+                }}
+              >
+                {item.cat}
+              </span>
             </div>
           </div>
         </StyledItem>

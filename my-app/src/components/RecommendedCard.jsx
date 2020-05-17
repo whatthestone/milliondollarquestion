@@ -6,6 +6,21 @@ import Icon from './icon';
 import { TelegramShareButton, WhatsappShareButton } from 'react-share';
 import { TelegramIcon, WhatsappIcon } from 'react-share';
 
+const Col = styled.div`
+	width: 50%;
+	display: inline-block;
+	@media only screen and (max-width: 480px) {
+		width: 100%;
+		padding-bottom: 10px;
+	}
+`;
+
+const Row = styled.div`
+	display: flex;
+	@media only screen and (max-width: 480px) {
+		display: block;
+	}
+`;
 const SCard = styled(Card)`
 	max-width: 600px;
 	margin: auto;
@@ -32,6 +47,9 @@ const SRButton = styled(Button)`
 	width: fit-content;
 	display: flex;
 	float: right;
+	@media only screen and (max-width: 480px) {
+		float: left;
+	}
 	border-radius: 15px;
 	padding-right: 15px;
 	padding-left: 15px;
@@ -44,6 +62,9 @@ const ShareButtonT = styled(TelegramShareButton)`
 	width: fit-content;
 	display: flex;
 	float: right;
+	@media only screen and (max-width: 480px) {
+		float: left;
+	}
 	border-radius: 15px;
 	padding-right: 15px;
 	padding-left: 15px;
@@ -56,6 +77,9 @@ const ShareButtonW = styled(WhatsappShareButton)`
 	width: fit-content;
 	display: flex;
 	float: right;
+	@media only screen and (max-width: 480px) {
+		float: left;
+	}
 	border-radius: 15px;
 	padding-right: 15px;
 	padding-left: 15px;
@@ -121,66 +145,76 @@ const RecommendedCard = ({ recipe, isSavedRecipe, onSave, onUnsave }) => {
 			</Alert>
 			<StyledCardBody>
 				<SCardTitle>{recipe.title}</SCardTitle>
-				<span>
-					<Link href={recipe.sourceUrl} target="_blank">
-						{extractHostname(recipe.sourceUrl)}
-					</Link>
-					{copiedState ? (
-						<SRButton
-							style={{ padding: '5px' }}
-							variant="success"
-							round
-							onClick={() => {
-								copyUrl(recipe.sourceUrl);
-								setCopiedState(true);
-							}}
-						>
-							<Icon name="checkall"></Icon>
-						</SRButton>
-					) : (
-						<SRButton
-							style={{ padding: '5px' }}
-							variant="info"
-							round
-							onClick={() => {
-								copyUrl(recipe.sourceUrl);
-								setCopiedState(true);
-							}}
-						>
-							<Icon name="copy"></Icon>
-						</SRButton>
-					)}
+				<Row>
+					<Col>
+						<Link href={recipe.sourceUrl} target="_blank">
+							{extractHostname(recipe.sourceUrl)}
+						</Link>
+					</Col>
+					<Col>
+						{copiedState ? (
+							<SRButton
+								style={{ padding: '5px' }}
+								variant="success"
+								round
+								onClick={() => {
+									copyUrl(recipe.sourceUrl);
+									setCopiedState(true);
+								}}
+							>
+								<Icon name="checkall"></Icon>
+							</SRButton>
+						) : (
+							<SRButton
+								style={{ padding: '5px' }}
+								variant="info"
+								round
+								onClick={() => {
+									copyUrl(recipe.sourceUrl);
+									setCopiedState(true);
+								}}
+							>
+								<Icon name="copy"></Icon>
+							</SRButton>
+						)}
 
-					<ShareButtonT title="Here's a recipe I found!" url={recipe.sourceUrl}>
-						<TelegramIcon size={32} round />
-					</ShareButtonT>
-					<ShareButtonW title="Here's a recipe I found!" url={recipe.sourceUrl}>
-						<WhatsappIcon size={32} round />
-					</ShareButtonW>
-					{recipeSavedState ? (
-						<SRButton
-							size="sm"
-							variant="info"
-							onClick={() => {
-								onUnsave();
-								setRecipeSavedState(false);
-							}}
+						<ShareButtonT
+							title="Here's a recipe I found!"
+							url={recipe.sourceUrl}
 						>
-							Saved
-						</SRButton>
-					) : (
-						<SRButton
-							size="sm"
-							variant="outline-info"
-							onClick={() => {
-								onSave();
-								setRecipeSavedState(true);
-							}}
+							<TelegramIcon size={32} round />
+						</ShareButtonT>
+						<ShareButtonW
+							title="Here's a recipe I found!"
+							url={recipe.sourceUrl}
 						>
-							Save
-						</SRButton>
-					)}
-				</span>
+							<WhatsappIcon size={32} round />
+						</ShareButtonW>
+						{recipeSavedState ? (
+							<SRButton
+								size="sm"
+								variant="info"
+								onClick={() => {
+									onUnsave();
+									setRecipeSavedState(false);
+								}}
+							>
+								Saved
+							</SRButton>
+						) : (
+							<SRButton
+								size="sm"
+								variant="outline-info"
+								onClick={() => {
+									onSave();
+									setRecipeSavedState(true);
+								}}
+							>
+								Save
+							</SRButton>
+						)}
+					</Col>
+				</Row>
 
 				<Recipe
 					key={recipe.id}

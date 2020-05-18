@@ -108,6 +108,7 @@ function PantryEditModal(props) {
           >
             <Form.Label>Used by</Form.Label>
             <DatePicker
+              inputReadOnly
               onChange={(date) => (date ? setExpiry(date.unix()) : null)}
               defaultValue={moment(moment.unix(expiry), "YYYY-MM-DD")}
               format={"YYYY-MM-DD"}

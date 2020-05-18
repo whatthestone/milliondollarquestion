@@ -12,6 +12,7 @@
     "react-dom": "^16.13.1",
     "react-infinite-scroll-component": "^5.0.4",
     "react-scripts": "3.4.1",
+    "react-share": "^4.1.0",
     "styled-media-helper": "^2.0.2"
   },
   "scripts": {

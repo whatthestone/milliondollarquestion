@@ -104,7 +104,7 @@ function PantryAddModal(props) {
             }}
           >
             <Form.Label>Used by</Form.Label>
-            <DatePicker onChange={(date) => setExpiry(date)} />
+            <DatePicker inputReadOnly onChange={(date) => setExpiry(date)} />
           </Form.Group>
           <Button variant="primary" type="submit">
             Submit

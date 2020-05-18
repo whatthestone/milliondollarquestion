@@ -198,15 +198,17 @@ export default function Profile() {
     setShowEdit(true);
   };
 
-  const filterPantry = pantry.filter((item) =>
-    filter === "all" && cat === "all"
-      ? item
-      : filter === "all"
-      ? cat === item.cat
-      : cat === "all"
-      ? filter === item.location
-      : (filter === item.location) & (cat === item.cat)
-  );
+  const filterPantry = pantry
+    .sort((a, b) => parseFloat(a.expiry) - parseFloat(b.expiry))
+    .filter((item) =>
+      filter === "all" && cat === "all"
+        ? item
+        : filter === "all"
+        ? cat === item.cat
+        : cat === "all"
+        ? filter === item.location
+        : (filter === item.location) & (cat === item.cat)
+    );
 
   //filter pantry list based on location
   const pantryList = (

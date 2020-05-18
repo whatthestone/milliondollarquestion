@@ -22,7 +22,7 @@ moment.updateLocale("en", {
     lastWeek: "[Expired last] dddd",
     nextWeek: "[Next] dddd",
     sameElse: function (now) {
-      const duration = moment.duration(this.diff(now)).days();
+      const duration = moment.duration(this.diff(now)).asDays();
       if (duration <= 0) {
         return "[Expired]";
       } else if (duration < 7) {

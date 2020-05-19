@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import MDAnswer from "../components/MDAnswer";
 import MDQuestion from "../components/MDQuestion";
 import fakeResults from "../data/results.json";
 import fakeRecipe from "../data/recipe.json";
 
+import { Context as QnContext } from "../Context/QnContext";
+import { Context as PantryContext } from "../Context/PantryContext";
+
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 
 //Using functional component
 const Main = ({ url }) => {
-  //cache data to show similiar recipes
-  const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("allRecipes")) || []
-  );
-  const [recipe, setRecipe] = useState(
-    JSON.parse(localStorage.getItem("recipe")) || []
-  );
+  const {
+    state: { data, recipe, preference, recipeId, savedRecipes },
+    EditData,
+    SetRecipeId,
+    SetRecipe,
+    EditFavRecipes,
+  } = useContext(QnContext);
+  const {
+    state: { pantry },
+  } = useContext(PantryContext);
 
-  const [recipeId, setRecipeId] = useState(null);
-  const [preference, setPreference] = useState({
-    mealType: null,
-    maxReadyTime: null,
-    cuisine: null,
-  });
-
-  const [pantry] = useState(JSON.parse(localStorage.getItem("pantry")) || []);
   const [showAns, setShowAns] = useState(false);
-
   //for infinite scroll
   const [totalResultLength, setTotalResultLength] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -55,7 +52,7 @@ const Main = ({ url }) => {
     fetchRecipes(newOffset).then((json) => {
       const newData = json.results;
       console.log(json);
-      setData([...data, ...newData]);
+      EditData(newData);
     });
   };
 
@@ -74,12 +71,11 @@ const Main = ({ url }) => {
 
         if (newData?.length > 0) {
           //set state of data
-          setData(newData);
-          localStorage.setItem("allRecipes", JSON.stringify(newData));
+          EditData(newData);
 
           const randomRecipe =
             newData[Math.floor(Math.random() * newData.length)];
-          setRecipeId(randomRecipe.id);
+          SetRecipeId(randomRecipe.id);
         }
         //TODO: Ask question again if no result.
       });
@@ -97,8 +93,7 @@ const Main = ({ url }) => {
           return res.status > 300 ? fakeRecipe : res.json();
         })
         .then((json) => {
-          setRecipe(json);
-          localStorage.setItem("recipe", JSON.stringify(json));
+          SetRecipe(json);
           setShowAns(true);
         });
     }
@@ -112,51 +107,31 @@ const Main = ({ url }) => {
   };
 
   const handleSave = () => {
-    let savedRecipes = [];
-    //if localstorage has saved recipes, add it in and set state, else add it in
-    if (localStorage.getItem("savedRecipes")) {
-      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
-      savedRecipes.push(recipe);
-      localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-    } else {
-      savedRecipes.push(recipe);
-      localStorage.setItem("savedRecipes", JSON.stringify(savedRecipes));
-    }
+    EditFavRecipes([...savedRecipes, recipe]);
   };
 
   const handleUnsave = () => {
-    console.log(recipe);
-    let savedRecipes = [];
-    if (localStorage.getItem("savedRecipes")) {
-      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
+    if (savedRecipes) {
       let filteredRecipes = savedRecipes.filter(
         (item) => item.id !== recipe.id
       );
-      console.log(filteredRecipes);
-      localStorage.setItem("savedRecipes", JSON.stringify(filteredRecipes));
+      EditFavRecipes(filteredRecipes);
     }
   };
 
-  const isSavedRecipe = localStorage.getItem("savedRecipes")
-    ? JSON.parse(localStorage.getItem("savedRecipes")).filter(
-        (item) => item.id === recipe.id
-      ).length
+  const isSavedRecipe = savedRecipes
+    ? savedRecipes.filter((item) => item.id === recipe.id).length
     : 0;
 
   const handleAnother = () => {
     //randomise recipe onclick another
     if (data) {
       const randomRecipe = data[Math.floor(Math.random() * data.length)];
-      console.log(randomRecipe);
-      localStorage.setItem("recipe", JSON.stringify(randomRecipe));
-      setRecipeId(randomRecipe.id);
+      SetRecipe(randomRecipe);
+      SetRecipeId(randomRecipe.id);
     } else {
       handleEdit(); //ask user to key in preference again
     }
-  };
-
-  const handleChangecard = (id) => {
-    setRecipeId(id);
   };
 
   //ONLY if showAns (a question is asked), redirect to ans page
@@ -167,21 +142,18 @@ const Main = ({ url }) => {
       <Switch>
         <Route path={`${url}/answer`}>
           <MDAnswer
-            recipe={recipe}
             isSavedRecipe={isSavedRecipe}
             onEdit={handleEdit}
             onSave={handleSave}
             onUnsave={handleUnsave}
             onAnother={handleAnother}
-            allRecipes={data}
-            changeCard={handleChangecard}
             fetchMoreData={fetchMoreData}
             hasMore={hasMore}
           />
         </Route>
 
         <Route path={`${url}/qn`}>
-          <MDQuestion setPreference={setPreference} />
+          <MDQuestion />
         </Route>
 
         <Route exact path={`${url}`}>

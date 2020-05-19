@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Component } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { Context as AuthContext } from "../Context/AuthContext";
 import firebase from "firebase";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 
@@ -15,14 +16,10 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-export default class Login extends Component {
-  // The component's Local state.
-  state = {
-    isSignedIn: false, // Local signed-in state.
-  };
+export default function Login() {
+  const { state, signin, setUsername } = useContext(AuthContext);
 
-  // Configure FirebaseUI.
-  uiConfig = {
+  const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: "popup",
     // We will display Google and Facebook as auth providers.
@@ -36,21 +33,24 @@ export default class Login extends Component {
     },
   };
 
-  // Listen to the Firebase Auth state and set the local state.
-  componentDidMount() {
-    this.unregisterAuthObserver = firebase
+  useEffect(() => {
+    const unregisterAuthObserver = firebase
       .auth()
-      .onAuthStateChanged((user) => this.setState({ isSignedIn: !!user }));
-  }
+      .onAuthStateChanged((user) => signin(!!user));
+    return () => {
+      unregisterAuthObserver();
+    };
+  }, []);
 
-  // Make sure we un-register Firebase observers when the component unmounts.
-  componentWillUnmount() {
-    this.unregisterAuthObserver();
-  }
+  useEffect(() => {
+    if (state.isSignedIn) {
+      setUsername(firebase.auth().currentUser.displayName);
+    }
+  }, [state.isSignedIn]);
 
-  render() {
-    if (!this.state.isSignedIn) {
-      return (
+  return (
+    <div>
+      {!state.isSignedIn ? (
         <div
           style={{
             display: "flex",
@@ -72,42 +72,132 @@ export default class Login extends Component {
           >
             <h2>Log in to enjoy more features!</h2>
             <StyledFirebaseAuth
-              uiConfig={this.uiConfig}
+              uiConfig={uiConfig}
               firebaseAuth={firebase.auth()}
             />
           </div>
         </div>
-      );
-    }
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "2rem .5rem 1rem .5rem",
-        }}
-      >
-        <h2>
-          Welcome {firebase.auth().currentUser.displayName}! You are now
-          signed-in!
-        </h2>
-        <a
+      ) : (
+        <div
           style={{
-            border: "1px solid black",
-            color: "black",
-            padding: ".5rem",
-            borderRadius: ".5rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem .5rem 1rem .5rem",
           }}
-          onClick={() => firebase.auth().signOut()}
         >
-          Sign out
-        </a>
-      </div>
-    );
-  }
+          <h2>Welcome {state.username}! You are now signed-in!</h2>
+          <a
+            style={{
+              border: "1px solid black",
+              color: "black",
+              padding: ".5rem",
+              borderRadius: ".5rem",
+            }}
+            onClick={() => firebase.auth().signOut()}
+          >
+            Sign out
+          </a>
+        </div>
+      )}
+    </div>
+  );
 }
+
+// export default class Login extends Component {
+//   // The component's Local state.
+//   state = {
+//     isSignedIn: false, // Local signed-in state.
+//   };
+
+//   // Configure FirebaseUI.
+//   uiConfig = {
+//     // Popup signin flow rather than redirect flow.
+//     signInFlow: "popup",
+//     // We will display Google and Facebook as auth providers.
+//     signInOptions: [
+//       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+//       // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+//     ],
+//     callbacks: {
+//       // Avoid redirects after sign-in.
+//       signInSuccessWithAuthResult: () => false,
+//     },
+//   };
+
+//   // Listen to the Firebase Auth state and set the local state.
+// componentDidMount() {
+//   this.unregisterAuthObserver = firebase
+//     .auth()
+//     .onAuthStateChanged((user) => this.setState({ isSignedIn: !!user }));
+// }
+
+// // Make sure we un-register Firebase observers when the component unmounts.
+// componentWillUnmount() {
+//   this.unregisterAuthObserver();
+// }
+
+//   render() {
+//     if (!this.state.isSignedIn) {
+//       return (
+//         <div
+//           style={{
+//             display: "flex",
+//             flexDirection: "column",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             padding: "2rem .5rem 1rem .5rem",
+//           }}
+//         >
+//           <div
+//             style={{
+//               display: "flex",
+//               flexDirection: "column",
+//               alignItems: "center",
+//               border: "1px solid #eeee",
+//               padding: "2rem",
+//               borderRadius: ".5rem",
+//             }}
+//           >
+//             <h2>Log in to enjoy more features!</h2>
+//             <StyledFirebaseAuth
+//               uiConfig={this.uiConfig}
+//               firebaseAuth={firebase.auth()}
+//             />
+//           </div>
+//         </div>
+//       );
+//     }
+//     return (
+//       <div
+//         style={{
+//           display: "flex",
+//           flexDirection: "column",
+//           alignItems: "center",
+//           justifyContent: "center",
+//           padding: "2rem .5rem 1rem .5rem",
+//         }}
+//       >
+//         <h2>
+//           Welcome {firebase.auth().currentUser.displayName}! You are now
+//           signed-in!
+//         </h2>
+//         <a
+//           style={{
+//             border: "1px solid black",
+//             color: "black",
+//             padding: ".5rem",
+//             borderRadius: ".5rem",
+//           }}
+//           onClick={() => firebase.auth().signOut()}
+//         >
+//           Sign out
+//         </a>
+//       </div>
+//     );
+//   }
+// }
 //   const [isSignedIn, setIsSignedIn] = useState(false);
 
 //   useEffect(() => {

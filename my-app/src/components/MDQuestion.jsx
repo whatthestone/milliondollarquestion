@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 // import styled from "styled-components";
 // import MyDropdownButton from "./MyDropdownButton";
 import QuestionItems from "./QuestionItems";
+import { Context as QnContext } from "../Context/QnContext";
 
 // const StyledContainer = styled.div`
 //   display: flex;
@@ -17,12 +18,14 @@ import QuestionItems from "./QuestionItems";
 //   margin: 2rem;
 // `;
 
-const MDQuestion = ({ setPreference }) => {
+const MDQuestion = () => {
   //State for MDQuestion
   // const pref = JSON.parse(localStorage.getItem("preference"));
   const [mealType, setMealType] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
   const [cuisine, setCuisine] = useState(null);
+
+  const { SetPreference } = useContext(QnContext);
 
   useEffect(() => {
     if (mealType && difficulty && cuisine) {
@@ -39,9 +42,9 @@ const MDQuestion = ({ setPreference }) => {
       //   difficulty,
       // };
 
-      setPreference(preference);
+      SetPreference(preference);
     }
-  }, [mealType, difficulty, cuisine, setPreference]);
+  }, [mealType, difficulty, cuisine]);
 
   const mealTypes = [
     "breakfast",

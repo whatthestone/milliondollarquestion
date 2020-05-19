@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Main from "./pages/Main";
 import MyNav from "./components/MyNav";
 import Saved from "./pages/Saved";
+import Login from "./pages/Login";
 
 class App extends Component {
   render() {
@@ -30,6 +31,7 @@ class App extends Component {
             <Route path="/pantry" component={Profile}></Route>
             <Route path="/saved" component={Saved}></Route>
             <Route path="/main" component={MainRouter}></Route>
+            <Route path="/login" component={Login}></Route>
           </Switch>
         </div>
       </Router>

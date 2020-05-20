@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Button,
   ListGroup,
@@ -13,6 +13,9 @@ import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
 import PantryEditModal from "../components/PantryEditModal";
 import moment from "moment";
+
+import { Context as PantryContext } from "../Context/PantryContext";
+import { Context as AuthContext } from "../Context/AuthContext";
 
 moment.updateLocale("en", {
   calendar: {
@@ -93,60 +96,16 @@ const StyledBadge = styled(Badge)`
 `;
 
 export default function Profile() {
-  const [pantry, setPantry] = useState(
-    JSON.parse(localStorage.getItem("pantry")) || [
-      {
-        name: "rice",
-        expiry: "1587513600",
-        location: "dry pantry",
-        cat: "grains",
-        key: "1587513600",
-      },
-      {
-        name: "egg",
-        expiry: "1588204800",
-        location: "dry pantry",
-        cat: "dairy & soy",
-        key: "1588204800",
-      },
-      { name: "ham", expiry: "1588377600", location: "fridge", cat: "meat" },
-      {
-        name: "ice cream",
-        expiry: "1588742721",
-        location: "freezer",
-        cat: "frozen",
-        key: "1588742721",
-      },
-      {
-        name: "cheese",
-        expiry: "1588742722",
-        location: "fridge",
-        cat: "dairy & soy",
-        key: "1588742722",
-      },
-      {
-        name: "bacon",
-        expiry: "1588742723",
-        location: "fridge",
-        cat: "meat",
-        key: "1588742723",
-      },
-      {
-        name: "celery",
-        expiry: "1588742724",
-        location: "fridge",
-        cat: "vegetables",
-        key: "1588742724",
-      },
-      {
-        name: "carrots",
-        expiry: "1588118400",
-        location: "fridge",
-        cat: "vegetables",
-        key: "1588118400",
-      },
-    ]
-  );
+  const {
+    state: { pantry },
+    AddItem,
+    DeleteItem,
+    EditItem,
+    GetPantry,
+  } = useContext(PantryContext);
+  const {
+    state: { profile },
+  } = useContext(AuthContext);
 
   const categories = {
     all: "#3f72af",
@@ -168,29 +127,32 @@ export default function Profile() {
   const [cat, setCat] = useState("all");
 
   useEffect(() => {
-    localStorage.setItem("pantry", JSON.stringify(pantry));
-  }, [pantry]);
+    GetPantry(profile.uid);
+  }, [profile]);
 
   const handleAddItem = ({ itemName, expiry, location, cat }) => {
-    const newPantry = [
-      ...pantry,
-      { name: itemName, expiry, location, cat, key: moment().unix() },
-    ];
-    setPantry(newPantry);
+    AddItem({
+      uid: profile.uid,
+      name: itemName,
+      expiry,
+      location,
+      cat,
+    });
   };
 
   const handleEditItem = ({ itemName, expiry, location, cat, key }) => {
-    const newPantry = pantry.map((item) =>
-      item.key === key
-        ? { ...item, name: itemName, expiry, location, cat }
-        : item
-    );
-    setPantry(newPantry);
+    EditItem({
+      uid: profile.uid,
+      name: itemName,
+      expiry,
+      location,
+      cat,
+      key,
+    });
   };
 
   const deleteItemHandler = (key) => {
-    const newPantry = pantry.filter((item) => item.key !== key);
-    setPantry(newPantry);
+    DeleteItem(key, profile.uid);
   };
 
   const openEditModal = (item) => {

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Row, Container, Button } from "react-bootstrap";
 import RecommendedCard from "../components/RecommendedCard";
 import SimiliarRecipeCard from "./SimiliarRecipeCard";
+import { Context as QnContext } from "../Context/QnContext";
 
 const OptionSelectionWrapper = styled.div`
   text-align: center;
@@ -31,22 +32,24 @@ const StyledSRecipeBox = styled.div`
 `;
 
 const MDAnswer = ({
-  recipe,
   isSavedRecipe,
   onEdit,
   onSave,
   onUnsave,
   onAnother,
-  allRecipes,
-  changeCard,
   fetchMoreData,
   hasMore,
 }) => {
-  const SimiliarRecipes = allRecipes
-    ? allRecipes
+  const {
+    state: { data, recipe },
+    SetRecipeId,
+  } = useContext(QnContext);
+
+  const SimiliarRecipes = data
+    ? data
         .filter((r) => r.id !== recipe.id)
         .map((r) => (
-          <SimiliarRecipeCard key={r.id} recipe={r} changeCard={changeCard} />
+          <SimiliarRecipeCard key={r.id} recipe={r} changeCard={SetRecipeId} />
         ))
     : null;
 
@@ -87,7 +90,7 @@ const MDAnswer = ({
           <h4>Based on your preferences, you might also like...</h4>
           {/* <p>infinite scroll</p> */}
           {/* <InfiniteScroll
-            dataLength={allRecipes.length}
+            dataLength={data.length}
             next={fetchMoreData}
             hasMore={hasMore}
             loader={<span>Loading...</span>}

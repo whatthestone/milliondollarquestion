@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import mediaHelper from "styled-media-helper";
 import { Container, Card, CardColumns, Button } from "react-bootstrap";
 import SavedCard from "../components/SavedCard";
+import { Context as QnContext } from "../Context/QnContext";
 
 const media = mediaHelper({
   sm: 320,
@@ -59,30 +60,25 @@ const SHeader = styled.h3`
 `;
 
 const Saved = () => {
-  const [savedRecipes, setSavedRecipes] = useState(
-    JSON.parse(localStorage.getItem("savedRecipes"))
-  );
+  const {
+    state: { savedRecipes },
+    EditFavRecipes,
+  } = useContext(QnContext);
 
   const [deletedRecipes, setDeletedRecipes] = useState(null);
 
   const handleDelete = (recipe) => {
-    console.log(recipe);
-    let savedRecipes = [];
-    if (localStorage.getItem("savedRecipes")) {
-      setDeletedRecipes(localStorage.getItem("savedRecipes"));
-      const savedRecipes = JSON.parse(localStorage.getItem("savedRecipes"));
+    if (savedRecipes) {
+      setDeletedRecipes(savedRecipes);
       let filteredRecipes = savedRecipes.filter(
         (item) => item.id !== recipe.id
       );
-      console.log(filteredRecipes);
-      localStorage.setItem("savedRecipes", JSON.stringify(filteredRecipes));
-      setSavedRecipes(filteredRecipes);
+      EditFavRecipes(filteredRecipes);
     }
   };
 
   const handleUndo = () => {
-    localStorage.setItem("savedRecipes", deletedRecipes);
-    setSavedRecipes(JSON.parse(deletedRecipes));
+    EditFavRecipes(deletedRecipes);
     setDeletedRecipes(null);
   };
 

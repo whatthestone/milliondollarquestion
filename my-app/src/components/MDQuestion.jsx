@@ -1,24 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-// import styled from "styled-components";
-// import MyDropdownButton from "./MyDropdownButton";
 import QuestionItems from "./QuestionItems";
+import { Link } from "react-router-dom";
 import { Context as QnContext } from "../Context/QnContext";
 
-// const StyledContainer = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-// const StyledQnContainer = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: center;
-//   margin: 2rem;
-// `;
-
-const MDQuestion = () => {
+const MDQuestion = ({ ingredient }) => {
   //State for MDQuestion
   // const pref = JSON.parse(localStorage.getItem("preference"));
   const [mealType, setMealType] = useState(null);
@@ -36,11 +21,6 @@ const MDQuestion = () => {
           difficulty === "Easy" ? "20" : difficulty === "Medium" ? "40" : "60",
       };
 
-      // const rawPreference = {
-      //   mealType,
-      //   cuisine,
-      //   difficulty,
-      // };
       SetPreference(preference);
     }
   }, [mealType, difficulty, cuisine]);
@@ -102,6 +82,8 @@ const MDQuestion = () => {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           justifyContent: "center",
           marginBottom: "2rem",
         }}
@@ -115,6 +97,31 @@ const MDQuestion = () => {
         >
           What are you in the mood for?
         </h3>
+        {ingredient ? (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={{ fontWeight: "bold" }}>
+              Must use{" "}
+              <span
+                style={{
+                  color: "orange",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                }}
+              >
+                {ingredient}
+              </span>
+            </span>
+            <Link to={`/main/qn`}>
+              <div
+                style={{
+                  paddingLeft: ".5rem",
+                }}
+              >
+                <span style={{ color: "red", cursor: "pointer" }}>remove</span>
+              </div>
+            </Link>
+          </div>
+        ) : null}
       </div>
       <QuestionItems
         optionList={mealTypes}

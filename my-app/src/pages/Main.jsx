@@ -11,7 +11,7 @@ import { Context as AuthContext } from "../Context/AuthContext";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 
 //Using functional component
-const Main = ({ url }) => {
+const Main = ({ url, ingredient }) => {
   const {
     state: { data, recipe, preference, recipeId, savedRecipes },
     EditData,
@@ -37,7 +37,11 @@ const Main = ({ url }) => {
   const fetchRecipes = (offset = 0) => {
     const { mealType, maxReadyTime, cuisine } = preference;
     return fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&offset=${offset}&apiKey=${process.env.REACT_APP_APIKEY}`
+      `https://api.spoonacular.com/recipes/complexSearch?cuisine=${cuisine}&includeIngredients=${
+        ingredient || ""
+      }&maxReadyTime=${maxReadyTime}&instructionsRequired=true&type=${mealType}&offset=${offset}&apiKey=${
+        process.env.REACT_APP_APIKEY
+      }`
     ).then((res) => {
       return res.status > 300 //use fakeresults if no api key too
         ? fakeResults
@@ -65,9 +69,6 @@ const Main = ({ url }) => {
     const { mealType, maxReadyTime, cuisine } = preference;
     //Only fetch if all not null
     if (mealType && maxReadyTime && cuisine) {
-      //string all the ingredients seperated by comma
-      //TODO check why api returning zero results if stringPantry have many items. I think it only returns recipe that use all the ingredients under "includeIngredients"
-      // const stringPantry = pantry.map((item) => `${item.name}`).join(",");
       fetchRecipes(0).then((json) => {
         console.log(json);
         setTotalResultLength(json.totalResults);
@@ -106,7 +107,7 @@ const Main = ({ url }) => {
 
   const history = useHistory();
   const handleEdit = () => {
-    history.push(`${url}/qn`);
+    history.push(`${url}/qn${ingredient ? `?ingredient=${ingredient}` : ""}`);
     //Set to question screen when edit button is clicked
     setShowAns(false);
   };
@@ -143,7 +144,14 @@ const Main = ({ url }) => {
   //TODO redirect user from answer to qns if recipe is null
   return (
     <div>
-      {showAns && <Redirect to={{ pathname: `${url}/answer` }} />}
+      {showAns && (
+        <Redirect
+          to={{
+            pathname: `${url}/answer`,
+            search: `?ingredient=${ingredient}`,
+          }}
+        />
+      )}
       <Switch>
         <Route path={`${url}/answer`}>
           <MDAnswer
@@ -158,7 +166,7 @@ const Main = ({ url }) => {
         </Route>
 
         <Route path={`${url}/qn`}>
-          <MDQuestion />
+          <MDQuestion ingredient={ingredient} />
         </Route>
 
         <Route exact path={`${url}`}>

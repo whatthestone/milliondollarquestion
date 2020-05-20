@@ -4,6 +4,7 @@ import { Row, Container, Button } from "react-bootstrap";
 import RecommendedCard from "../components/RecommendedCard";
 import SimiliarRecipeCard from "./SimiliarRecipeCard";
 import { Context as QnContext } from "../Context/QnContext";
+import { useLocation } from "react-router-dom";
 
 const OptionSelectionWrapper = styled.div`
   text-align: center;
@@ -45,6 +46,12 @@ const MDAnswer = ({
     SetRecipeId,
   } = useContext(QnContext);
 
+  //get query so we can return back to qn page with ingredient used
+  const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+  };
+  let query = useQuery();
+
   const SimiliarRecipes = data
     ? data
         .filter((r) => r.id !== recipe.id)
@@ -69,7 +76,7 @@ const MDAnswer = ({
       />
       <Row>
         <OptionSelectionWrapper>
-          <SButton variant="outline-primary" onClick={onEdit}>
+          <SButton variant="outline-primary" onClick={() => onEdit(query)}>
             Edit
           </SButton>
           <SButton variant="outline-primary" onClick={onAnother}>

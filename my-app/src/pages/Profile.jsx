@@ -9,6 +9,7 @@ import {
   Col,
   Badge,
 } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PantryAddModal from "../components/PantryAddModal";
 import PantryEditModal from "../components/PantryEditModal";
@@ -211,7 +212,7 @@ export default function Profile() {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "flex-end",
+                alignItems: "center",
                 flexDirection: "column",
               }}
             >
@@ -234,6 +235,19 @@ export default function Profile() {
               >
                 {item.cat}
               </span>
+            </div>
+            <div style={{ padding: "0 1rem 0 2rem" }}>
+              <Link to={`/main/qn?ingredient=${item.name}`}>
+                <span
+                  style={{
+                    color: "orange",
+                    fontWeight: "bold",
+                    textAlign: "right",
+                  }}
+                >
+                  Cook
+                </span>
+              </Link>
             </div>
           </div>
         </StyledItem>

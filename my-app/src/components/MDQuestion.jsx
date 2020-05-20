@@ -135,30 +135,6 @@ const MDQuestion = () => {
         option={cuisine}
       />
     </div>
-    // <StyledContainer>
-    //   <h3 style={{ textAlign: "center" }}>What shall we make today?</h3>
-    //   <StyledQnContainer>
-    //     <MyDropdownButton
-    //       title="Meal type"
-    //       optionList={mealTypes}
-    //       setOption={setMealType}
-    //       option={mealType}
-    //     />
-
-    //     <MyDropdownButton
-    //       title="Difficulty"
-    //       optionList={diffTypes}
-    //       setOption={setDifficulty}
-    //       option={difficulty}
-    //     />
-    //     <MyDropdownButton
-    //       title="Cuisine"
-    //       optionList={cuisineTypes}
-    //       setOption={setCuisine}
-    //       option={cuisine}
-    //     />
-    //   </StyledQnContainer>
-    // </StyledContainer>
   );
 };
 

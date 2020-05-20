@@ -51,6 +51,7 @@ export default function Login() {
               color: "white",
               padding: ".5rem",
               borderRadius: ".5rem",
+              cursor: "pointer",
             }}
             onClick={signout}
           >

@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import mediaHelper from "styled-media-helper";
 import { Container, Card, CardColumns, Button } from "react-bootstrap";
 import SavedCard from "../components/SavedCard";
 import { Context as QnContext } from "../Context/QnContext";
+import { Context as AuthContext } from "../Context/AuthContext";
 
 const media = mediaHelper({
   sm: 320,
@@ -63,9 +64,17 @@ const Saved = () => {
   const {
     state: { savedRecipes },
     EditFavRecipes,
+    GetFavRecipes,
   } = useContext(QnContext);
+  const {
+    state: { profile },
+  } = useContext(AuthContext);
 
   const [deletedRecipes, setDeletedRecipes] = useState(null);
+
+  useEffect(() => {
+    GetFavRecipes(profile.uid);
+  }, [profile]);
 
   const handleDelete = (recipe) => {
     if (savedRecipes) {
@@ -73,12 +82,12 @@ const Saved = () => {
       let filteredRecipes = savedRecipes.filter(
         (item) => item.id !== recipe.id
       );
-      EditFavRecipes(filteredRecipes);
+      EditFavRecipes(filteredRecipes, profile.uid);
     }
   };
 
   const handleUndo = () => {
-    EditFavRecipes(deletedRecipes);
+    EditFavRecipes(deletedRecipes, profile.uid);
     setDeletedRecipes(null);
   };
 

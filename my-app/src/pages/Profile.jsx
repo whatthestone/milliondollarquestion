@@ -15,6 +15,7 @@ import PantryEditModal from "../components/PantryEditModal";
 import moment from "moment";
 
 import { Context as PantryContext } from "../Context/PantryContext";
+import { Context as AuthContext } from "../Context/AuthContext";
 
 moment.updateLocale("en", {
   calendar: {
@@ -100,7 +101,11 @@ export default function Profile() {
     AddItem,
     DeleteItem,
     EditItem,
+    GetPantry,
   } = useContext(PantryContext);
+  const {
+    state: { profile },
+  } = useContext(AuthContext);
 
   const categories = {
     all: "#3f72af",
@@ -121,18 +126,23 @@ export default function Profile() {
   const [filter, setFilter] = useState("all");
   const [cat, setCat] = useState("all");
 
+  useEffect(() => {
+    GetPantry(profile.uid);
+  }, [profile]);
+
   const handleAddItem = ({ itemName, expiry, location, cat }) => {
     AddItem({
+      uid: profile.uid,
       name: itemName,
       expiry,
       location,
       cat,
-      key: moment().unix(),
     });
   };
 
   const handleEditItem = ({ itemName, expiry, location, cat, key }) => {
     EditItem({
+      uid: profile.uid,
       name: itemName,
       expiry,
       location,
@@ -142,7 +152,7 @@ export default function Profile() {
   };
 
   const deleteItemHandler = (key) => {
-    DeleteItem(key);
+    DeleteItem(key, profile.uid);
   };
 
   const openEditModal = (item) => {

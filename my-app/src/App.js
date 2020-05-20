@@ -11,7 +11,20 @@ import Profile from "./pages/Profile";
 import Main from "./pages/Main";
 import MyNav from "./components/MyNav";
 import Saved from "./pages/Saved";
-import Login from "./pages/Login";
+import firebase from "firebase";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCZr88pgVYVtfizS5dLwUssIspQhez0F44",
+  authDomain: "milliondollarquestion-83e1d.firebaseapp.com",
+  databaseURL: "https://milliondollarquestion-83e1d.firebaseio.com",
+  projectId: "milliondollarquestion-83e1d",
+  storageBucket: "milliondollarquestion-83e1d.appspot.com",
+  messagingSenderId: "766640572413",
+  appId: "1:766640572413:web:efb43df0c767fbb92c7b94",
+  measurementId: "G-P5GZMQL6GX",
+};
+
+firebase.initializeApp(firebaseConfig);
 
 class App extends Component {
   render() {
@@ -27,11 +40,10 @@ class App extends Component {
             of them to render at a time
           */}
           <Switch>
-            <Route exact path="/" component={Dashboard}></Route>
             <Route path="/pantry" component={Profile}></Route>
             <Route path="/saved" component={Saved}></Route>
             <Route path="/main" component={MainRouter}></Route>
-            <Route path="/login" component={Login}></Route>
+            <Route exact path="/" component={Dashboard}></Route>
           </Switch>
         </div>
       </Router>

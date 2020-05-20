@@ -41,7 +41,6 @@ const MDQuestion = () => {
       //   cuisine,
       //   difficulty,
       // };
-
       SetPreference(preference);
     }
   }, [mealType, difficulty, cuisine]);

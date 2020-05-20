@@ -1,4 +1,5 @@
 import createDataContext from "./createDataContext";
+import firebase from "firebase";
 
 const savePantryLocalStorage = (pantry) => {
   localStorage.setItem("pantry", JSON.stringify(pantry));
@@ -6,6 +7,9 @@ const savePantryLocalStorage = (pantry) => {
 
 const pantryReducer = (state, action) => {
   switch (action.type) {
+    case "getpantry":
+      savePantryLocalStorage(action.payload);
+      return { ...state, pantry: action.payload };
     case "additem":
       const newPantry_add = [...state.pantry, action.payload];
       savePantryLocalStorage(newPantry_add);
@@ -30,19 +34,40 @@ const pantryReducer = (state, action) => {
   }
 };
 
-const AddItem = (dispatch) => ({ name, expiry, location, cat, key }) => {
+const AddItem = (dispatch) => ({ uid, name, expiry, location, cat }) => {
   try {
+    let newItemKey = firebase.database().ref().child("pantry").push().key; //generates random key
+
+    const newItem = {
+      name,
+      expiry,
+      location,
+      cat,
+      key: newItemKey,
+    };
+
+    if (uid) {
+      let updates = {};
+      updates[`/users/${uid}/pantry/${newItemKey}`] = newItem;
+      firebase.database().ref().update(updates);
+      //   let newItemRef = firebase.database().ref(`/users/${uid}/pantry`).push();
+      //   newItemRef.set(newItem);
+    }
+
     dispatch({
       type: "additem",
-      payload: { name, expiry, location, cat, key },
+      payload: newItem,
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-const DeleteItem = (dispatch) => (key) => {
+const DeleteItem = (dispatch) => (key, uid) => {
   try {
+    if (uid) {
+      firebase.database().ref(`/users/${uid}/pantry/${key}`).remove();
+    }
     dispatch({
       type: "deleteitem",
       payload: key,
@@ -52,12 +77,61 @@ const DeleteItem = (dispatch) => (key) => {
   }
 };
 
-const EditItem = (dispatch) => ({ name, expiry, location, cat, key }) => {
+const EditItem = (dispatch) => ({ uid, name, expiry, location, cat, key }) => {
   try {
+    const editedItem = { name, expiry, location, cat, key };
+
+    if (uid) {
+      firebase.database().ref(`/users/${uid}/pantry/${key}`).update(editedItem);
+    }
     dispatch({
       type: "edititem",
-      payload: { name, expiry, location, cat, key },
+      payload: editedItem,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const GetPantry = (dispatch) => (uid) => {
+  try {
+    let ls_pantry = JSON.parse(localStorage.getItem("pantry")) || [];
+    if (uid) {
+      firebase
+        .database()
+        .ref(`/users/${uid}/pantry`)
+        .once("value")
+        .then((snapshot) => {
+          //Use pantry from db if it exist
+          if (snapshot.val() !== null) {
+            let db_Pantry = [];
+            Object.keys(snapshot.val()).map((k) => {
+              db_Pantry.push(snapshot.val()[k]);
+              return k;
+            });
+            dispatch({
+              type: "getpantry",
+              payload: db_Pantry,
+            });
+          } else {
+            //if no pantry in db, save localstorage pantry to db.
+            //use case: if user has no account initially then set up an account, we want to transfer pantry over.
+            if (ls_pantry.length > 0) {
+              let updates = {};
+              ls_pantry.map((item) => {
+                updates[`/users/${uid}/pantry/${item.key}`] = item;
+                firebase.database().ref().update(updates);
+                return item;
+              });
+            }
+          }
+        });
+    } else {
+      dispatch({
+        type: "getpantry",
+        payload: ls_pantry,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -69,59 +143,9 @@ export const { Provider, Context } = createDataContext(
     AddItem,
     DeleteItem,
     EditItem,
+    GetPantry,
   },
   {
-    pantry: JSON.parse(localStorage.getItem("pantry")) || [
-      {
-        name: "rice",
-        expiry: "1587513600",
-        location: "dry pantry",
-        cat: "grains",
-        key: "1587513600",
-      },
-      {
-        name: "egg",
-        expiry: "1588204800",
-        location: "dry pantry",
-        cat: "dairy & soy",
-        key: "1588204800",
-      },
-      { name: "ham", expiry: "1588377600", location: "fridge", cat: "meat" },
-      {
-        name: "ice cream",
-        expiry: "1588742721",
-        location: "freezer",
-        cat: "frozen",
-        key: "1588742721",
-      },
-      {
-        name: "cheese",
-        expiry: "1588742722",
-        location: "fridge",
-        cat: "dairy & soy",
-        key: "1588742722",
-      },
-      {
-        name: "bacon",
-        expiry: "1588742723",
-        location: "fridge",
-        cat: "meat",
-        key: "1588742723",
-      },
-      {
-        name: "celery",
-        expiry: "1588742724",
-        location: "fridge",
-        cat: "vegetables",
-        key: "1588742724",
-      },
-      {
-        name: "carrots",
-        expiry: "1588118400",
-        location: "fridge",
-        cat: "vegetables",
-        key: "1588118400",
-      },
-    ],
+    pantry: [],
   }
 );

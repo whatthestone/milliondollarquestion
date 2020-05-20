@@ -1,13 +1,24 @@
 import createDataContext from "./createDataContext";
+import firebase from "firebase";
 
 const authReducer = (state, action) => {
   switch (action.type) {
     case "signin":
-      const { isSignedIn } = action.payload;
-      return { ...state, isSignedIn };
-    case "username":
-      const { username } = action.payload;
-      return { ...state, username };
+      const { isSignedIn, profile } = action.payload;
+      return { ...state, isSignedIn, profile };
+    case "profile":
+      return { ...state, profile: action.payload };
+
+    case "signout":
+      return {
+        ...state,
+        isSignedIn: false,
+        profile: {
+          name: null,
+          email: null,
+          uid: null,
+        },
+      };
 
     default:
       return state;
@@ -16,15 +27,41 @@ const authReducer = (state, action) => {
 
 const signin = (dispatch) => (isSignedIn) => {
   try {
-    dispatch({ type: "signin", payload: { isSignedIn } });
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+      firebase
+        .database()
+        .ref("users/" + user.uid)
+        .once("value")
+        .then((snapshot) => {
+          if (snapshot.val() === null) {
+            firebase
+              .database()
+              .ref("users/" + user.uid)
+              .set({
+                name: user.displayName,
+                email: user.email,
+              });
+          }
+        });
+
+      const profile = {
+        name: user.displayName,
+        email: user.email,
+        uid: user.uid,
+      };
+      dispatch({ type: "signin", payload: { isSignedIn, profile } });
+    }
   } catch (error) {
     console.log(error);
   }
 };
 
-const setUsername = (dispatch) => (username) => {
+const signout = (dispatch) => () => {
   try {
-    dispatch({ type: "username", payload: { username } });
+    firebase.auth().signOut();
+    dispatch({ type: "signout" });
   } catch (error) {
     console.log(error);
   }
@@ -34,10 +71,14 @@ export const { Provider, Context } = createDataContext(
   authReducer,
   {
     signin,
-    setUsername,
+    signout,
   },
   {
     isSignedIn: false,
-    username: "",
+    profile: {
+      name: null,
+      email: null,
+      uid: null,
+    },
   }
 );

@@ -6,6 +6,7 @@ import fakeRecipe from "../data/recipe.json";
 
 import { Context as QnContext } from "../Context/QnContext";
 import { Context as PantryContext } from "../Context/PantryContext";
+import { Context as AuthContext } from "../Context/AuthContext";
 
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 
@@ -21,6 +22,10 @@ const Main = ({ url }) => {
   const {
     state: { pantry },
   } = useContext(PantryContext);
+
+  const {
+    state: { profile },
+  } = useContext(AuthContext);
 
   const [showAns, setShowAns] = useState(false);
   //for infinite scroll
@@ -107,7 +112,7 @@ const Main = ({ url }) => {
   };
 
   const handleSave = () => {
-    EditFavRecipes([...savedRecipes, recipe]);
+    EditFavRecipes([...savedRecipes, recipe], profile.uid);
   };
 
   const handleUnsave = () => {
@@ -115,7 +120,7 @@ const Main = ({ url }) => {
       let filteredRecipes = savedRecipes.filter(
         (item) => item.id !== recipe.id
       );
-      EditFavRecipes(filteredRecipes);
+      EditFavRecipes(filteredRecipes, profile.uid);
     }
   };
 

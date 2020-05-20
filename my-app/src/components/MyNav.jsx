@@ -36,6 +36,7 @@ const MyNav = () => {
             width: "auto",
             display: "flex",
             alignItems: "center",
+            cursor: "default",
           }}
         >
           <Login />

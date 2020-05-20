@@ -1,4 +1,5 @@
 import createDataContext from "./createDataContext";
+import firebase from "firebase";
 
 const saveDataLocalStorage = (newData) => {
   localStorage.setItem("allRecipes", JSON.stringify(newData));
@@ -79,12 +80,54 @@ const SetPreference = (dispatch) => (preference) => {
   }
 };
 
-const EditFavRecipes = (dispatch) => (favs) => {
+const EditFavRecipes = (dispatch) => (favs, uid) => {
   try {
+    if (uid) {
+      firebase.database().ref(`users/${uid}/favrecipes`).set(favs);
+    }
     dispatch({
       type: "editfav",
       payload: favs,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const GetFavRecipes = (dispatch) => (uid) => {
+  try {
+    let ls_fav = JSON.parse(localStorage.getItem("savedRecipes"));
+    if (uid) {
+      firebase
+        .database()
+        .ref(`/users/${uid}/favrecipes`)
+        .once("value")
+        .then((snapshot) => {
+          //Use fav recipes from db if it exist
+          if (snapshot.val() !== null) {
+            let db_fav = [];
+            Object.keys(snapshot.val()).map((k) => {
+              db_fav.push(snapshot.val()[k]);
+              return k;
+            });
+            dispatch({
+              type: "editfav",
+              payload: db_fav,
+            });
+          } else {
+            //if no fav in db, save localstorage fav to db.
+            //use case: if user has no account initially then set up an account, we want to transfer fav over.
+            if (ls_fav.length > 0) {
+              firebase.database().ref(`users/${uid}/favrecipes`).set(ls_fav);
+            }
+          }
+        });
+    } else {
+      dispatch({
+        type: "editfav",
+        payload: ls_fav,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -98,12 +141,13 @@ export const { Provider, Context } = createDataContext(
     SetRecipe,
     SetPreference,
     EditFavRecipes,
+    GetFavRecipes,
   },
   {
     data: JSON.parse(localStorage.getItem("allRecipes")) || [],
     recipe: JSON.parse(localStorage.getItem("recipe")) || [],
     recipeId: null,
-    savedRecipes: JSON.parse(localStorage.getItem("savedRecipes")) || [],
+    savedRecipes: [],
     preference: {
       mealType: null,
       maxReadyTime: null,
